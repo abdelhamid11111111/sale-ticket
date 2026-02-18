@@ -1,0 +1,91 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  image       String
+  location    String
+  eventDate   DateTime @db.Timestamp(6)
+  price       Decimal  @db.Decimal(10, 2)
+
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+
+  cityId      String
+  city        City     @relation(fields: [cityId], references: [id])
+
+  tickets     Ticket[]
+
+  createdAt   DateTime @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime @updatedAt @db.Timestamp(6)
+
+  @@map("events")
+  @@index([title])
+  @@index([categoryId])
+  @@index([cityId])
+  @@index([eventDate])
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  events    Event[]
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+}
+
+model City {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  events    Event[]
+  tickets   Ticket[]
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+}
+
+model Buyer {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String
+  tickets   Ticket[]
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+
+  @@index([email])
+}
+
+model Ticket {
+  id         String   @id @default(cuid())
+  quantity   Int
+  totalPrice Decimal  @db.Decimal(10, 2)
+
+  eventId    String
+  event      Event    @relation(fields: [eventId], references: [id])
+
+  buyerId    String
+  buyer      Buyer    @relation(fields: [buyerId], references: [id])
+
+  cityId     String
+  city       City     @relation(fields: [cityId], references: [id])
+
+  sessionId  String
+
+  createdAt  DateTime @default(now()) @db.Timestamp(6)
+
+  @@index([eventId])
+  @@index([cityId])
+  @@index([createdAt])
+  @@index([sessionId])
+}
