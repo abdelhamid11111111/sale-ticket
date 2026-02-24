@@ -15,8 +15,9 @@ import {
 import Sidebar from "@/app/components/admin/Sidebar";
 import Link from "next/link";
 import { City, Category } from "@/app/types/types";
+import { useParams } from "next/navigation";
 
-const CreateEventForm = () => {
+const UpdateEventForm = () => {
   const [cities, setCities] = useState<City[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -33,6 +34,7 @@ const CreateEventForm = () => {
     cityId: "",
   });
   const route = useRouter();
+  const { id } = useParams();
 
   useEffect(() => {
     const fetchCities = async () => {
@@ -53,9 +55,31 @@ const CreateEventForm = () => {
         console.error("Error: ", error);
       }
     };
+    const fetchEvent = async () => {
+      try {
+        const res = await fetch(`/api/events/${id}`);
+        const data = await res.json();
+        setForm({
+          title: data.title,
+          description: data.description,
+          location: data.location,
+          price: data.price,
+          eventDate: data.eventDate?.slice(0, 16),
+          image: null,
+          categoryId: data.category?.id,
+          cityId: data.city?.id,
+        });
+        if (data.image) {
+          setImagePreview(data.image);
+        }
+      } catch (error) {
+        console.error("Error: ", error);
+      }
+    };
+    fetchEvent();
     fetchCategories();
     fetchCities();
-  }, []);
+  }, [id]);
 
   const handleCreate = async () => {
     try {
@@ -71,15 +95,15 @@ const CreateEventForm = () => {
         formData.append("image", form.image);
       }
 
-      const res = await fetch("/api/events", {
-        method: "POST",
+      const res = await fetch(`/api/events/${id}`, {
+        method: "PUT",
         body: formData,
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        route.push(`/admin/events?page=${1}`);
+        route.push("/admin/events");
       } else {
         setError(data.error);
       }
@@ -116,9 +140,9 @@ const CreateEventForm = () => {
       <div className="ml-64 p-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Create New Event</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Update New Event</h1>
           <p className="text-gray-500 mt-1">
-            Fill in the details to create a new event
+            Fill in the details to update an event
           </p>
         </div>
 
@@ -470,7 +494,7 @@ const CreateEventForm = () => {
                 className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-medium transition-colors"
               >
                 <Save className="w-5 h-5" />
-                Create Event
+                Update Event
               </button>
               <Link href="/admin/events">
                 <button
@@ -489,4 +513,4 @@ const CreateEventForm = () => {
   );
 };
 
-export default CreateEventForm;
+export default UpdateEventForm;

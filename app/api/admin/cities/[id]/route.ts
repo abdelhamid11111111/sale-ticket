@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "../../../../lib/prisma";
+import { prisma } from "../../../../../lib/prisma";
 
 export async function DELETE(
   req: NextRequest,
@@ -18,7 +18,10 @@ export async function DELETE(
       },
     });
 
-    return NextResponse.json({ status: 200 });
+    return NextResponse.json(
+      { message: "City deleted successfully" },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("server error", error);
     return NextResponse.json({ error: "server error" }, { status: 500 });

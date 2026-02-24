@@ -1,40 +1,49 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "@/app/components/admin/Sidebar";
-import { Plus, Edit, Trash2, Search } from "lucide-react";
-
-// ==================== TYPES ====================
-interface Category {
-  id: number;
-  name: string;
-}
-
-// ==================== CONSTANTS ====================
-const CATEGORIES: Category[] = [
-  {
-    id: 1,
-    name: "Music Festivals",
-  },
-  {
-    id: 2,
-    name: "Sports",
-  },
-  {
-    id: 3,
-    name: "Theater & Arts",
-  },
-  {
-    id: 4,
-    name: "Comedy",
-  },
-  {
-    id: 5,
-    name: "Movies",
-  },
-];
+import { Plus, Edit, MapPin, Trash2, Search } from "lucide-react";
+import { Category } from "@/app/types/types";
+import AddModal from "../../../app/components/admin/modals/manageCategories/AddModal";
+import EditModal from "../../../app/components/admin/modals/manageCategories/EditModal";
+import DeleteModal from "../../../app/components/admin/modals/manageCategories/DeleteModal";
 
 export default function ManageCategories() {
-  const [category] = useState<Category[]>(CATEGORIES);
+  const [category, setCategory] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchCategories = async () => {
+    try {
+      const res = await fetch("/api/categories");
+      const data = await res.json();
+      setCategory(data);
+    } catch (error) {
+      console.error("Error: ", error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch("/api/categories");
+        const data = await res.json();
+        setCategory(data);
+        setLoading(!loading);
+      } catch (error) {
+        console.error("Error: ", error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  const updateState = (id: string, updateName: string) => {
+    setCategory((prev) => 
+      prev.map((category) => (category.id === id ? {...category, name: updateName} : category))
+    )
+  };
+
+  const deleteEle =(id: string) => {
+    setCategory((prev) => prev.filter((category) => category.id !== id))
+  }
 
   return (
     <div className="min-h-screen bg-[#f6f6f8]">
@@ -44,27 +53,6 @@ export default function ManageCategories() {
 
         {/* ---------- MAIN CONTENT ---------- */}
         <main className="flex flex-1 flex-col overflow-hidden pl-64">
-          {/* Mobile Header */}
-          <header className="md:hidden flex items-center justify-between p-4 bg-white border-b border-gray-200">
-            <button className="p-2 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="4" x2="20" y1="12" y2="12" />
-                <line x1="4" x2="20" y1="6" y2="6" />
-                <line x1="4" x2="20" y1="18" y2="18" />
-              </svg>
-            </button>
-          </header>
-
           {/* Content Area */}
           <div className="flex-1 overflow-auto p-6 md:p-8">
             <div className="max-w-7xl mx-auto space-y-6">
@@ -80,10 +68,11 @@ export default function ManageCategories() {
                   </p>
                 </div>
                 <div className="mt-4 sm:mt-0 flex items-center gap-3">
-                  <button className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-[#135bec] rounded-lg hover:bg-[#0e4ac4] shadow-sm transition-colors">
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add Category
-                  </button>
+                  <AddModal
+                    onAddCategory={(newCategory) =>
+                      setCategory((prev) => [newCategory, ...prev])
+                    }
+                  />
                 </div>
               </div>
 
@@ -97,6 +86,36 @@ export default function ManageCategories() {
                 />
               </div>
 
+              {/* ----- CITIES GRID - CARDS ----- */}
+              {loading && (
+                <>
+                  {/* ----- LOADING SKELETON ----- */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    {[...Array(8)].map((_, index) => (
+                      <div
+                        key={index}
+                        className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
+                      >
+                        <div className="p-5 animate-pulse">
+                          <div className="flex items-start justify-between">
+                            {/* City Name Skeleton */}
+                            <div className="flex-1 space-y-3">
+                              <div className="h-5 w-3/4 bg-gray-200 rounded-md"></div>
+                              {/* <div className="h-4 w-1/2 bg-gray-100 rounded-md"></div> */}
+                            </div>
+
+                            {/* Action Buttons Skeleton */}
+                            <div className="flex items-center gap-2 ml-4">
+                              <div className="w-9 h-9 bg-gray-200 rounded-lg"></div>
+                              <div className="w-9 h-9 bg-gray-200 rounded-lg"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
               {/* ----- CITIES GRID - CARDS ----- */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {category.map((category) => (
@@ -115,12 +134,8 @@ export default function ManageCategories() {
 
                         {/* Action Buttons */}
                         <div className="flex items-center gap-1">
-                          <button className="p-2 text-[#135bec] text-3xl rounded-lg hover:bg-gray-100 transition-colors">
-                            <Edit className="text-3xl" />
-                          </button>
-                          <button className="p-2 text-red-600 text-xl rounded-lg hover:bg-gray-100 transition-colors">
-                            <Trash2 className="text-xl" />
-                          </button>
+                          <EditModal Name={category.name} UpdateState={updateState} Id={category.id} />
+                          <DeleteModal Name={category.name} onDelete={deleteEle} Id={category.id} />
                         </div>
                       </div>
                     </div>
@@ -129,9 +144,71 @@ export default function ManageCategories() {
               </div>
 
               {/* ----- EMPTY STATE ----- */}
-              {category.length === 0 && (
-                <div className="text-center py-12">
-                  <p className="text-gray-500">No cities found</p>
+              {category.length === 0 && loading === false && (
+                /* ----- EMPTY STATE ----- */
+                <div className="flex flex-col items-center justify-center py-16 px-4">
+                  <div className="relative mb-6">
+                    {/* Decorative circles */}
+                    <div className="absolute -top-2 -left-2 w-20 h-20 bg-blue-100 rounded-full opacity-20 animate-pulse"></div>
+                    <div className="absolute -bottom-2 -right-2 w-16 h-16 bg-purple-100 rounded-full opacity-20 animate-pulse delay-75"></div>
+
+                    {/* Icon container */}
+                    <div className="relative w-24 h-24 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl flex items-center justify-center shadow-sm">
+                      <MapPin
+                        className="w-12 h-12 text-[#135bec]"
+                        strokeWidth={1.5}
+                      />
+                    </div>
+                  </div>
+
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                    No categories yet
+                  </h3>
+                  <p className="text-gray-500 text-center max-w-md mb-6">
+                    Get started by adding your first category. Categories help
+                    you organize events by desire.
+                  </p>
+
+                  <AddModal />
+
+                  {/* Optional: Feature list */}
+                  <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl w-full">
+                    <div className="text-center p-4">
+                      <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mx-auto mb-3">
+                        <MapPin className="w-6 h-6 text-[#135bec]" />
+                      </div>
+                      <h4 className="font-semibold text-gray-900 mb-1">
+                        Organize by Category
+                      </h4>
+                      <p className="text-sm text-gray-500">
+                        Group events by category for better management
+                      </p>
+                    </div>
+
+                    <div className="text-center p-4">
+                      <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center mx-auto mb-3">
+                        <Search className="w-6 h-6 text-purple-600" />
+                      </div>
+                      <h4 className="font-semibold text-gray-900 mb-1">
+                        Easy Discovery
+                      </h4>
+                      <p className="text-sm text-gray-500">
+                        Help users find events in their categories
+                      </p>
+                    </div>
+
+                    <div className="text-center p-4">
+                      <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center mx-auto mb-3">
+                        <Plus className="w-6 h-6 text-green-600" />
+                      </div>
+                      <h4 className="font-semibold text-gray-900 mb-1">
+                        Quick Setup
+                      </h4>
+                      <p className="text-sm text-gray-500">
+                        Add categories in seconds and start organizing
+                      </p>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>

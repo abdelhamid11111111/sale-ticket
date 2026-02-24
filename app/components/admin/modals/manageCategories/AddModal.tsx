@@ -1,17 +1,17 @@
-import { Plus, Edit } from "lucide-react";
+import { Plus } from "lucide-react";
 import React, { useState } from "react";
+import { Category } from "../../../types/types";
 
-interface onUpdateCityProp {
-  onEdit?: (id: string, newCity: string) => void;
-  NameCity: string;
-  IdCity: string;
+
+interface AddCategoryProp {
+    onAddCategory?: (newCategory: Category) => void; 
 }
 
-const EditModal = ({ onEdit, NameCity, IdCity }: onUpdateCityProp) => {
+
+const AddModal = ({onAddCategory}:AddCategoryProp) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [CityName, setCityName] = useState(NameCity);
+  const [CategoryName, setCategoryName] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const id = IdCity;
 
   const handleModal = () => {
     setIsOpen(!isOpen);
@@ -20,22 +20,24 @@ const EditModal = ({ onEdit, NameCity, IdCity }: onUpdateCityProp) => {
   const closeModal = () => {
     setIsOpen(false);
     setError(null);
+    setCategoryName("");
   };
 
-  const handleUpdate = async () => {
-    if (!CityName) return;
+  const handleReq = async () => {
+    if (!CategoryName) return;
     try {
-      const res = await fetch(`/api/cities/${id}`, {
-        method: "PUT",
+      const res = await fetch("/api/categories", {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ CityName }),
+        body: JSON.stringify({ CategoryName }),
       });
 
       const data = await res.json();
 
       if (res.ok) {
         setIsOpen(false);
-        onEdit?.(id, CityName);
+        setCategoryName("");
+        onAddCategory?.(data)
       } else {
         setError(data.error);
       }
@@ -54,9 +56,10 @@ const EditModal = ({ onEdit, NameCity, IdCity }: onUpdateCityProp) => {
     <div>
       <button
         onClick={handleModal}
-        className="p-2 text-[#135bec] rounded-lg hover:bg-gray-100 transition-colors"
+        className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-[#135bec] rounded-lg hover:bg-[#0e4ac4] shadow-sm transition-colors"
       >
-        <Edit className="w-5 h-5" />
+        <Plus className="w-4 h-4 mr-2" />
+        Add Category
       </button>
 
       {isOpen && (
@@ -64,7 +67,7 @@ const EditModal = ({ onEdit, NameCity, IdCity }: onUpdateCityProp) => {
           <div className="bg-white rounded-lg p-6 shadow-lg w-full max-w-md">
             {/* Header */}
             <div className="mb-4">
-              <h2 className="text-lg font-bold text-[#111418]">Update City</h2>
+              <h2 className="text-lg font-bold text-[#111418]">Add Categories</h2>
             </div>
 
             {/* Error message */}
@@ -77,10 +80,10 @@ const EditModal = ({ onEdit, NameCity, IdCity }: onUpdateCityProp) => {
             {/* Body */}
             <div className="grid gap-4">
               <label className="flex flex-col gap-1">
-                <span className="text-[#111418] font-medium">City Name</span>
+                <span className="text-[#111418] font-medium">Category Name</span>
                 <input
-                  value={CityName}
-                  onChange={(e) => setCityName(e.target.value)}
+                  value={CategoryName}
+                  onChange={(e) => setCategoryName(e.target.value)}
                   type="text"
                   placeholder="Enter city name"
                   className="w-full rounded-md border border-gray-300 px-3 py-2 text-base text-[#111418] focus:border-blue-500 focus:outline-none focus:ring-0"
@@ -97,11 +100,11 @@ const EditModal = ({ onEdit, NameCity, IdCity }: onUpdateCityProp) => {
                 Cancel
               </button>
               <button
-                onClick={handleUpdate}
+                onClick={handleReq}
                 className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-[#135bec] rounded-lg hover:bg-[#0e4ac4] shadow-sm transition-colors"
               >
                 <Plus className="w-4 h-4 mr-2" />
-                Update City
+                Add Category
               </button>
             </div>
           </div>
@@ -111,4 +114,4 @@ const EditModal = ({ onEdit, NameCity, IdCity }: onUpdateCityProp) => {
   );
 };
 
-export default EditModal;
+export default AddModal;

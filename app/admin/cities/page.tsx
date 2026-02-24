@@ -2,10 +2,10 @@
 import { useEffect, useState } from "react";
 import Sidebar from "@/app/components/admin/Sidebar";
 import { Search, MapPin, Plus } from "lucide-react";
-import AddModal from "@/app/components/modals/manageCities/AddModal";
+import AddModal from "../../../app/components/admin/modals/manageCities/AddModal";
 import { City } from "../../types/types";
-import DeleteModal from "@/app/components/modals/manageCities/DeleteModal";
-import EditModal from "@/app/components/modals/manageCities/EditModal";
+import DeleteModal from "../../../app/components/admin/modals/manageCities/DeleteModal";
+import EditModal from "../../../app/components/admin/modals/manageCities/EditModal";
 
 export default function ManageCities() {
   const [cities, setCities] = useState<City[]>([]);
@@ -28,7 +28,7 @@ export default function ManageCities() {
   }, []);
 
   const handleDeleteCity = async (id: string) => {
-    setCities((prev) => prev.filter((category) => category.id !== id));
+    setCities((prev) => prev.filter((city) => city.id !== id));
   };
 
   const handleEdit = async (id: string, newCity: string) => {

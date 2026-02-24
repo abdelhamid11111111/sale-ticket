@@ -23,10 +23,10 @@ model Event {
   price       Decimal  @db.Decimal(10, 2)
 
   categoryId  String
-  category    Category @relation(fields: [categoryId], references: [id])
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   cityId      String
-  city        City     @relation(fields: [cityId], references: [id])
+  city        City     @relation(fields: [cityId], references: [id], onDelete: Cascade)
 
   tickets     Ticket[]
 
@@ -72,13 +72,13 @@ model Ticket {
   totalPrice Decimal  @db.Decimal(10, 2)
 
   eventId    String
-  event      Event    @relation(fields: [eventId], references: [id])
+  event      Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
   buyerId    String
-  buyer      Buyer    @relation(fields: [buyerId], references: [id])
+  buyer      Buyer    @relation(fields: [buyerId], references: [id], onDelete: Cascade)
 
   cityId     String
-  city       City     @relation(fields: [cityId], references: [id])
+  city       City     @relation(fields: [cityId], references: [id], onDelete: Cascade)
 
   sessionId  String
 

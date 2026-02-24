@@ -1,90 +1,42 @@
-'use client'
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa6";
 import { FaLocationDot } from "react-icons/fa6";
 import Link from "next/link";
 import Navbar from "./Navbar";
-
-const events = [
-  {
-    title: "Summer Beats Festival",
-    price: "45.00",
-    time: "8:30 PM",
-    date: "Jul 15, 2026",
-    location: "Central Park, NY",
-    img: "https://images.unsplash.com/photo-1507874457470-272b3c8d8ee2?auto=format&fit=crop&w=800&q=80",
-    category: "Music",
-  },
-  {
-    title: "Art & Light Expo",
-    price: "45.00",
-    time: "8:30 PM",
-    date: "Aug 2, 2026",
-    location: "Downtown Gallery, LA",
-    img: "https://images.unsplash.com/photo-1515169067860-538c58f35b16?auto=format&fit=crop&w=800&q=80",
-    category: "Art",
-  },
-  {
-    title: "Tech Innovators Meetup",
-    price: "45.00",
-    time: "8:30 PM",
-    date: "Sep 10, 2026",
-    location: "Silicon Valley, CA",
-    img: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=800&q=80",
-    category: "Tech",
-  },
-  {
-    title: "Food Truck Fiesta",
-    price: "45.00",
-    time: "8:30 PM",
-    date: "Oct 5, 2026",
-    location: "Miami Beach, FL",
-    img: "https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=800&q=80",
-    category: "Food",
-  },
-  {
-    title: "Summer Beats Festival",
-    price: "45.00",
-    time: "8:30 PM",
-    date: "Jul 15, 2026",
-    location: "Central Park, NY",
-    img: "https://images.unsplash.com/photo-1507874457470-272b3c8d8ee2?auto=format&fit=crop&w=800&q=80",
-    category: "Music",
-  },
-  {
-    title: "Art & Light Expo",
-    price: "45.00",
-    time: "8:30 PM",
-    date: "Aug 2, 2026",
-    location: "Downtown Gallery, LA",
-    img: "https://images.unsplash.com/photo-1515169067860-538c58f35b16?auto=format&fit=crop&w=800&q=80",
-    category: "Art",
-  },
-  {
-    title: "Tech Innovators Meetup",
-    price: "45.00",
-    time: "8:30 PM",
-    date: "Sep 10, 2026",
-    location: "Silicon Valley, CA",
-    img: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=800&q=80",
-    category: "Tech",
-  },
-  {
-    title: "Food Truck Fiesta",
-    price: "45.00",
-    time: "8:30 PM",
-    date: "Oct 5, 2026",
-    location: "Miami Beach, FL",
-    img: "https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=800&q=80",
-    category: "Food",
-  },
-];
+import { Category, EventForm, apiRes } from "../../types/types";
 
 const EventsGrid = () => {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [events, setEvents] = useState<EventForm[]>([]);
+
+  // fetch categories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch("");
+        const data = await res.json();
+        setCategories([{ id: "all", name: "All" }, ...data]);
+      } catch (error) {
+        console.error("Error: ", error);
+      }
+    };
+    fetchCategories();
+    const fetchEvents = async () => {
+      try {
+        const res = await fetch("/api/events");
+        const data: apiRes = await res.json();
+        setEvents(data.data);
+      } catch (error) {
+        console.error("Error ", error);
+      }
+    };
+    fetchEvents();
+  }, []);
+
   return (
     <div>
-
       {/* Filter Bar */}
       <div className="flex items-center justify-between pt-10 pb-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         {/* Left side */}
@@ -96,37 +48,24 @@ const EventsGrid = () => {
         </div>
 
         {/* Right side */}
-       <Link href='/events' className="text-sm font-semibold text-primary text-blue-500 hover:text-primary/80 transition-colors flex items-center gap-1">
-              View all events
-              <FaArrowRight />
-            </Link >
+        <Link
+          href="/events"
+          className="text-sm font-semibold text-primary text-blue-500 hover:text-primary/80 transition-colors flex items-center gap-1"
+        >
+          View all events
+          <FaArrowRight />
+        </Link>
       </div>
 
       {/* Categories - Horizontal Scroll */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-6 overflow-x-auto scrollbar-hide">
         <div className="flex gap-4">
-          {[
-            "All",
-            "Music",
-            "Art",
-            "Tech",
-            "Food",
-            "All",
-            "Music",
-            "Art",
-            "Tech",
-            "Food",
-            "All",
-            "Music",
-            "Art",
-            "Tech",
-            "Food",
-          ].map((cat, index) => (
+          {categories.map((cat) => (
             <button
-              key={index}
+              key={cat.id}
               className="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-full text-sm font-medium hover:bg-primary hover:text-white transition-colors whitespace-nowrap flex-shrink-0"
             >
-              {cat}
+              {cat.name}
             </button>
           ))}
         </div>
@@ -141,10 +80,9 @@ const EventsGrid = () => {
           >
             {/* Image Section */}
             <div className="relative h-48 w-full">
-              <Image
-                src={event.img}
+              <img
+                src={event.image}
                 alt={event.title}
-                fill
                 className="object-cover"
               />
             </div>
@@ -154,10 +92,17 @@ const EventsGrid = () => {
               {/* Date + Time */}
               <div className="flex items-center justify-between text-sm">
                 <span className="bg-blue-100 text-blue-600 font-semibold px-2 py-1 rounded-md text-xs">
-                  {event.date}
+                  {new Date(event.eventDate).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
                 </span>
                 <span className="text-slate-500 font-medium">
-                  {event.time || "7:00 PM"}
+                  {new Date(event.eventDate).toLocaleTimeString("en-US", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
                 </span>
               </div>
 
