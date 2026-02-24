@@ -10,12 +10,11 @@ import { EventForm } from "../../types/types";
 const ProductPage = () => {
   const { title } = useParams();
   const [event, setEvent] = useState<EventForm | null>(null);
-  const [previewImg, setImgPreview] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const res = await fetch(`/api/event/${title}`);
+        const res = await fetch(`/api/admin/event/${title}`);
         const data = await res.json();
         setEvent(data);
         // if (data.image) {

@@ -4,7 +4,6 @@ import Image from "next/image";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa6";
 import { FaLocationDot } from "react-icons/fa6";
 import Link from "next/link";
-import Navbar from "./Navbar";
 import { Category, EventForm, apiRes } from "../../types/types";
 
 const EventsGrid = () => {
@@ -15,7 +14,7 @@ const EventsGrid = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch("");
+        const res = await fetch("/api/admin/categories");
         const data = await res.json();
         setCategories([{ id: "all", name: "All" }, ...data]);
       } catch (error) {
@@ -25,9 +24,9 @@ const EventsGrid = () => {
     fetchCategories();
     const fetchEvents = async () => {
       try {
-        const res = await fetch("/api/events");
-        const data: apiRes = await res.json();
-        setEvents(data.data);
+        const res = await fetch("/api/usrUI/homepage");
+        const data = await res.json();
+        setEvents(data);
       } catch (error) {
         console.error("Error ", error);
       }
@@ -63,7 +62,7 @@ const EventsGrid = () => {
           {categories.map((cat) => (
             <button
               key={cat.id}
-              className="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-full text-sm font-medium hover:bg-primary hover:text-white transition-colors whitespace-nowrap flex-shrink-0"
+              className="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-full text-sm font-medium hover:bg-primary hover:dark:bg-slate-700 transition-colors whitespace-nowrap shrink-0"
             >
               {cat.name}
             </button>
@@ -127,9 +126,11 @@ const EventsGrid = () => {
                 </div>
 
                 {/* Arrow Button */}
-                <button className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow hover:bg-primary transition-all">
-                  <FaArrowRight className="text-gray-400 hover:text-gray-300" />
-                </button>
+                <Link href={`/events/${event.title}`}>
+                  <button className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow hover:bg-primary transition-all">
+                    <FaArrowRight className="text-gray-400 hover:text-gray-300" />
+                  </button>
+                </Link>
               </div>
             </div>
           </div>

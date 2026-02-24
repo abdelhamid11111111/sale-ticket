@@ -60,7 +60,7 @@ export default function ManageEventsPage() {
     setLoading(true);
     try {
       const res = await fetch(
-        `/api/events?page=${page}&categoryId=${categoryId}&search=${search}`,
+        `/api/admin/events?page=${page}&categoryId=${categoryId}&search=${search}`,
       );
       const data: apiRes = await res.json();
       setEvents(data.data);
