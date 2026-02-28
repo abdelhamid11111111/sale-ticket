@@ -1,6 +1,6 @@
 import { Plus } from "lucide-react";
 import React, { useState } from "react";
-import { Category } from "../../../types/types";
+import { Category } from "../../../../types/types";
 
 
 interface AddCategoryProp {
@@ -26,7 +26,7 @@ const AddModal = ({onAddCategory}:AddCategoryProp) => {
   const handleReq = async () => {
     if (!CategoryName) return;
     try {
-      const res = await fetch("/api/categories", {
+      const res = await fetch("/api/admin/categories", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ CategoryName }),

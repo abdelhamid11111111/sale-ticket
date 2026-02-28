@@ -39,7 +39,7 @@ const UpdateEventForm = () => {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const res = await fetch("/api/cities");
+        const res = await fetch("/api/admin/cities");
         const data = await res.json();
         setCities(data);
       } catch (error) {
@@ -48,7 +48,7 @@ const UpdateEventForm = () => {
     };
     const fetchCategories = async () => {
       try {
-        const res = await fetch("/api/categories");
+        const res = await fetch("/api/admin/categories");
         const data = await res.json();
         setCategories(data);
       } catch (error) {
@@ -57,7 +57,7 @@ const UpdateEventForm = () => {
     };
     const fetchEvent = async () => {
       try {
-        const res = await fetch(`/api/events/${id}`);
+        const res = await fetch(`/api/admin/events/${id}`);
         const data = await res.json();
         setForm({
           title: data.title,
@@ -95,7 +95,7 @@ const UpdateEventForm = () => {
         formData.append("image", form.image);
       }
 
-      const res = await fetch(`/api/events/${id}`, {
+      const res = await fetch(`/api/admin/events/${id}`, {
         method: "PUT",
         body: formData,
       });

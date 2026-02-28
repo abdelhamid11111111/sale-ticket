@@ -25,7 +25,7 @@ const EditModal = ({ onEdit, NameCity, IdCity }: onUpdateCityProp) => {
   const handleUpdate = async () => {
     if (!CityName) return;
     try {
-      const res = await fetch(`/api/cities/${id}`, {
+      const res = await fetch(`/api/admin/cities/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ CityName }),

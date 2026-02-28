@@ -1,46 +1,106 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import { FaLocationDot } from "react-icons/fa6";
 import { FaCalendarAlt } from "react-icons/fa";
 import Image from "next/image";
+import { EventForm } from "@/app/types/types";
+import Link from "next/link";
 
 const HeroSection = () => {
+  const [events, setEvents] = useState<EventForm[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchEvents = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/usrUI/slides");
+      const data = await res.json();
+      setEvents(data);
+    } catch (error) {
+      console.error("Error ", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const load = async () => {
+      fetchEvents();
+    };
+    load();
+  }, []);
+
   return (
-    <section className="relative pt-6 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <div className="relative rounded-lg overflow-hidden h-[500px] shadow-2xl group">
-        <div className="absolute inset-0 bg-slate-900">
-          <Image
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuA17QB_6ACqHBTmUHzv3feJppXqFxMRfn0bfyJhUOrUGD5mpNsbPtAA4T4wX9cxnFzapWVFzx9GVkgN0WjdWvDkf1xmweujszTGT_j9BL4g8nYr1a-u7Z5ThVDmNFp_jCrKM90K7kMDEPIVBd0gkAkF9CQjKw1gpy6vcRxt_d-FRe7M2LzARHSNyYmpmQcOP8YhXr0PsGdtwvLFcFhJCOqGl075o_CpVo95hKnyIZRXPQn6t61Zct5hiavIblrAIdE1Mz7lFfYqxiV4"
-            alt="Crowd at a vibrant music concert with stage lights"
-            fill
-            className="object-cover opacity-90 transition-transform duration-700 group-hover:scale-105"
-          />
-        </div>
-        {/* <div className="absolute inset-0 bg-gradient-to-t from-background-dark/90 via-background-dark/40 to-transparent"></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-background-dark/80 via-transparent to-transparent"></div> */}
-        <div className="absolute bottom-0 left-0 p-8 md:p-12 w-full md:w-2/3 lg:w-1/2 flex flex-col items-start gap-4">
-          <div className="flex items-center gap-3">
-            <span className="flex items-center gap-1 text-slate-200 text-sm font-medium">
-              <FaCalendarAlt/>
-              Nov 24 - 26, 2023
-            </span>
-          </div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
-            Neon Nights <br /> Music Festival
-          </h1>
-          <p className="text-slate-300 text-lg line-clamp-2">
-            Experience the ultimate fusion of electronic beats and visual art in
-            the heart of the city. Three nights of unforgettable performances.
-          </p>
-          <div className="flex items-center gap-2 text-slate-200 mt-2">
-            <FaLocationDot/>
-            <span>Downtown Arena, Los Angeles</span>
-          </div>
-        </div>
-        <div className="absolute bottom-8 right-8 flex gap-2">
-          <button className="w-3 h-3 rounded-full bg-white"></button>
-          <button className="w-3 h-3 rounded-full bg-white/30 hover:bg-white/50 transition-colors"></button>
-          <button className="w-3 h-3 rounded-full bg-white/30 hover:bg-white/50 transition-colors"></button>
-          <button className="w-3 h-3 rounded-full bg-white/30 hover:bg-white/50 transition-colors"></button>
+    <section className="relative pt-12 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <h2 className="text-black text-4xl font-bold mb-4">Last Events</h2>
+      <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-2">
+        <div className="flex gap-4 animate-scroll">
+          {events.length === 0
+            ? Array.from({ length: 5 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="relative rounded-lg overflow-hidden w-96 h-96 shrink-0 bg-slate-200 animate-pulse"
+                >
+                  <div className="absolute bottom-0 left-0 p-4 w-full flex flex-col gap-2">
+                    <div className="h-3 w-24 bg-slate-300 rounded-md" />
+                    <div className="h-5 w-48 bg-slate-300 rounded-md" />
+                    <div className="h-3 w-32 bg-slate-300 rounded-md" />
+                  </div>
+                </div>
+              ))
+            : events.map((e) => (
+                <div
+                  key={e.id}
+                  className="relative rounded-lg overflow-hidden w-96 h-96 shrink-0 group"
+                >
+                  <Link href={`/events/${e.title}`}>
+                    {/* Background Image */}
+                    <div className="absolute inset-0 bg-slate-900">
+                      <img
+                        src={e.image}
+                        alt={e.title}
+                        className="w-full h-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105"
+                      />
+                      {/* <Image
+                  src={e.title}
+                  alt={e.image}
+                  fill
+                  className="object-cover opacity-90 transition-transform duration-700 group-hover:scale-105"
+                  unoptimized
+                /> */}
+                    </div>
+
+                    {/* Gradient overlays */}
+                    <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent" />
+
+                    {/* Content */}
+                    <div className="absolute bottom-0 left-0 p-4 w-full flex flex-col items-start gap-1">
+                      <span className="flex items-center gap-1 text-slate-200 text-xs font-medium">
+                        <FaCalendarAlt />
+                        {new Date(e.eventDate).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </span>
+
+                      <h2 className="text-lg font-bold text-white leading-tight">
+                        {e.title}
+                      </h2>
+
+                      <div className="flex items-center gap-1 text-slate-300 text-xs">
+                        <FaLocationDot />
+                        <span>
+                          <span style={{ display: "flex", gap: "4px" }}>
+                            <span>{e.location},</span>
+                            <span>{e.city.name}</span>
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+              ))}
         </div>
       </div>
     </section>

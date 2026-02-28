@@ -8,10 +8,9 @@ import Footer from "../components/ui/Footer";
 
 const HomePage = () => {
   return (
-    <div className="bg-background-light font-display text-slate-800 dark:text-slate-100 antialiased min-h-screen flex flex-col transition-colors duration-300">
-      
+<div className="bg-background-light font-display text-slate-800 dark:text-slate-100 antialiased min-h-screen flex flex-col transition-colors duration-300 overflow-x-hidden w-full">      
       {/* Navbar */}
-      <Navbar />
+      <Navbar query=""/>
 
       {/* Main Content */}
       <main className="grow">

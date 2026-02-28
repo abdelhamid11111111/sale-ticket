@@ -70,6 +70,7 @@ model Ticket {
   id         String   @id @default(cuid())
   quantity   Int
   totalPrice Decimal  @db.Decimal(10, 2)
+  sessionId  String
 
   eventId    String
   event      Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
@@ -80,7 +81,6 @@ model Ticket {
   cityId     String
   city       City     @relation(fields: [cityId], references: [id], onDelete: Cascade)
 
-  sessionId  String
 
   createdAt  DateTime @default(now()) @db.Timestamp(6)
 

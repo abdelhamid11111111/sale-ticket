@@ -1,7 +1,7 @@
 import { Plus } from "lucide-react";
 import React, { useState } from "react";
 import { Edit } from "lucide-react";
-import { Category } from "../../../types/types";
+import { Category } from "../../../../types/types";
 
 interface AddCategoryProp {
   UpdateState?: (updateName: string, id: string) => void;
@@ -27,7 +27,7 @@ const EditModal = ({ UpdateState, Name, Id }: AddCategoryProp) => {
   const handleReq = async () => {
     if (!CategoryName) return;
     try {
-      const res = await fetch(`/api/categories/${id}`, {
+      const res = await fetch(`/api/admin/categories/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ CategoryName }),

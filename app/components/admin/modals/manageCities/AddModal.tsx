@@ -1,6 +1,6 @@
 import { Plus } from "lucide-react";
 import React, { useState } from "react";
-import { City } from "../../../types/types";
+import { City } from "../../../../types/types";
 
 interface onAddCityProp {
   onAddCity?: (newCity: City) => void;
@@ -24,7 +24,7 @@ const AddModal = ({ onAddCity }: onAddCityProp) => {
   const handleReq = async () => {
     if (!CityName) return;
     try {
-      const res = await fetch("/api/cities", {
+      const res = await fetch("/api/admin/cities", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ CityName }),

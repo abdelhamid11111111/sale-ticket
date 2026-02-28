@@ -38,7 +38,7 @@ const DeleteModalEvent = ({
 
   const handleDelete = async () => {
     try {
-      const res = await fetch(`/api/events/${id}`, {
+      const res = await fetch(`/api/admin/events/${id}`, {
         method: "DELETE",
       });
 

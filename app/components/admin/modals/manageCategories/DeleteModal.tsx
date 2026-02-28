@@ -25,7 +25,7 @@ const DeleteModal = ({ Name, Id, onDelete }: deleteCategoryProp) => {
 
   const handleDelete = async () => {
     try {
-      const res = await fetch(`/api/categories/${id}`, {
+      const res = await fetch(`/api/admin/categories/${id}`, {
         method: "DELETE",
       });
 

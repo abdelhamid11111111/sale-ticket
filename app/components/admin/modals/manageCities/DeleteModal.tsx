@@ -25,7 +25,7 @@ const DeleteModal = ({ NameCity, IdCity, onDelete }: deleteCityProp) => {
 
   const handleDelete = async () => {
     try {
-      const res = await fetch(`/api/cities/${id}`, {
+      const res = await fetch(`/api/admin/cities/${id}`, {
         method: "DELETE",
       });
       

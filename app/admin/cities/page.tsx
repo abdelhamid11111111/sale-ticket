@@ -14,7 +14,7 @@ export default function ManageCities() {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const res = await fetch("/api/cities");
+        const res = await fetch("/api/admin/cities");
         const data = await res.json();
         setCities(data);
       } catch (error) {

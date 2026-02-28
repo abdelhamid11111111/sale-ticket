@@ -6,6 +6,7 @@ import { FaCalendarAlt } from "react-icons/fa";
 import { FaArrowRight, FaLocationDot } from "react-icons/fa6";
 import { useParams } from "next/navigation";
 import { EventForm } from "../../types/types";
+import FirstForm from "../../components/ui/modals/Form";
 
 const ProductPage = () => {
   const { title } = useParams();
@@ -30,21 +31,29 @@ const ProductPage = () => {
   return (
     <div className="bg-background-light text-slate-900 font-display antialiased min-h-screen flex flex-col">
       {/* Navigation */}
-      <Navbar />
+      <Navbar query="" />
 
       {/* Main Content */}
-      {event && (
-        <main key={event.id} className="flex-grow pt-8 pb-20">
+      {event ? 
+      (
+        <main key={event.id} className="row pt-8 pb-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Content Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {/* Left Column: Image */}
               <div className="relative w-full aspect-square rounded-lg overflow-hidden shadow-2xl">
                 <img
-                  alt={event.title}
-                  className="w-full h-full object-cover"
                   src={event.image}
+                  alt={event.title}
+                  className="object-cover bg-gray-500 w-full h-full"
                 />
+                {new Date(event.eventDate) < new Date() && (
+                  <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
+                    <span className="text-white text-2xl font-bold tracking-widest">
+                      SOLD OUT
+                    </span>
+                  </div>
+                )}
               </div>
 
               {/* Right Column: Content */}
@@ -93,7 +102,10 @@ const ProductPage = () => {
                         Location
                       </p>
                       <p className="font-bold text-slate-900">
-                        {event.location}
+                        <span style={{ display: "flex", gap: "4px" }}>
+                          <span>{event.location},</span>
+                          <span>{event.city.name}</span>
+                        </span>
                       </p>
                     </div>
                   </div>
@@ -120,21 +132,84 @@ const ProductPage = () => {
                 </div>
 
                 {/* Book Now Button */}
-                <div className="pt-4">
-                  <button className="w-full bg-primary dark:bg-slate-800 hover:bg-primary-hover text-white font-bold py-4 px-6 rounded-full shadow-lg shadow-primary/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2">
-                    <span>Book Now</span>
-                    <FaArrowRight />
-                  </button>
-                  <p className="text-center text-xs text-slate-400 mt-4">
-                    No hidden fees. Cancel anytime within 24h.
-                  </p>
+
+                {new Date(event.eventDate) > new Date() && (
+                  <div className="pt-4">
+                    <FirstForm
+                      price={event.price}
+                      title={event.title}
+                      image={event.image}
+                      eventDate={event.eventDate}
+                      cityId={event.city.id}
+                      eventId={event.id}
+                    />
+
+                    <p className="text-center text-xs text-slate-400 mt-4">
+                      No hidden fees. Cancel anytime within 24h.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </main>
+      ) : (
+        <main className="grow pt-8 pb-20 animate-pulse">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+              {/* Left: Image skeleton */}
+              <div className="w-full aspect-square rounded-lg bg-slate-200" />
+
+              {/* Right: Content skeleton */}
+              <div className="space-y-8">
+                {/* Title */}
+                <div className="space-y-3">
+                  <div className="h-10 w-3/4 bg-slate-200 rounded-lg" />
+                  <div className="h-10 w-1/2 bg-slate-200 rounded-lg" />
+                </div>
+
+                {/* Date & Location */}
+                <div className="flex flex-wrap items-center gap-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-slate-200" />
+                    <div className="space-y-2">
+                      <div className="h-3 w-16 bg-slate-200 rounded" />
+                      <div className="h-4 w-32 bg-slate-200 rounded" />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-slate-200" />
+                    <div className="space-y-2">
+                      <div className="h-3 w-16 bg-slate-200 rounded" />
+                      <div className="h-4 w-24 bg-slate-200 rounded" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Price */}
+                <div className="border-t border-slate-200 pt-6 space-y-2">
+                  <div className="h-3 w-10 bg-slate-200 rounded" />
+                  <div className="h-10 w-28 bg-slate-200 rounded-lg" />
+                </div>
+
+                {/* About */}
+                <div className="space-y-3">
+                  <div className="h-6 w-40 bg-slate-200 rounded-lg" />
+                  <div className="h-4 w-full bg-slate-200 rounded" />
+                  <div className="h-4 w-full bg-slate-200 rounded" />
+                  <div className="h-4 w-3/4 bg-slate-200 rounded" />
+                </div>
+
+                {/* Button */}
+                <div className="pt-4 space-y-3">
+                  <div className="h-14 w-full bg-slate-200 rounded-full" />
+                  <div className="h-3 w-48 bg-slate-200 rounded mx-auto" />
                 </div>
               </div>
             </div>
           </div>
         </main>
       )}
-
       {/* Simple Footer */}
       <Footer />
     </div>

@@ -43,10 +43,25 @@ export interface PaginationInfo {
   totalItems: number;
   currentPage: number;
   itemPerPage: number;
-  offset: number
+  offset: number;
 }
 
 export interface apiRes {
-  data: EventForm[],
-  Pagination: PaginationInfo
+  data: EventForm[];
+  Pagination: PaginationInfo;
+}
+
+export interface Buyer {
+  id: string;
+}
+
+export interface Tickets {
+  id: string;
+  quantity: number;
+  totalPrice: number;
+  event: EventForm;
+  buyer: Buyer;
+  city: City;
+  sessionId: string;
+  createdAt: string;
 }

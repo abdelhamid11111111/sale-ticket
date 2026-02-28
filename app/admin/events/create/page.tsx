@@ -37,7 +37,7 @@ const CreateEventForm = () => {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const res = await fetch("/api/cities");
+        const res = await fetch("/api/admin/cities");
         const data = await res.json();
         setCities(data);
       } catch (error) {
@@ -46,7 +46,7 @@ const CreateEventForm = () => {
     };
     const fetchCategories = async () => {
       try {
-        const res = await fetch("/api/categories");
+        const res = await fetch("/api/admin/categories");
         const data = await res.json();
         setCategories(data);
       } catch (error) {
@@ -71,7 +71,7 @@ const CreateEventForm = () => {
         formData.append("image", form.image);
       }
 
-      const res = await fetch("/api/events", {
+      const res = await fetch("/api/admin/events", {
         method: "POST",
         body: formData,
       });
