@@ -148,7 +148,7 @@ export default function ManageEventsPage() {
 
               <div className="flex gap-3">
                 <Link href="/admin/events/create">
-                  <button className="flex items-center gap-2 cursor-pointer bg-[#135bec] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#0e4bce] shadow-md">
+                  <button className="flex items-center  gap-2 cursor-pointer bg-[#135bec] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#0e4bce] shadow-md">
                     <IoAddOutline className="text-xl" />
                     Create New Event
                   </button>
