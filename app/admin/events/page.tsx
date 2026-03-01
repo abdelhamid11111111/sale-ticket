@@ -159,7 +159,7 @@ export default function ManageEventsPage() {
             {/* Filters */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
               <input
-                placeholder="Search events by title, artist..."
+                placeholder="Search events by title..."
                 value={search}
                 className="md:col-span-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm focus:ring-2 focus:ring-[#135bec]"
                 onChange={(e) => {

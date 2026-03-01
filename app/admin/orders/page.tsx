@@ -1,137 +1,110 @@
+"use client";
+import React from "react";
 import Sidebar from "@/app/components/admin/Sidebar";
 import { CiSearch } from "react-icons/ci";
-import { Edit, Trash, Trash2 } from "lucide-react";
 import { FaArrowLeftLong, FaArrowRight } from "react-icons/fa6";
+import { useEffect, useState } from "react";
+import { PaginationInfo, Tickets, apiResTicket } from "@/app/types/types";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function SoldTicketsLog() {
-  // Table data array
-  const tableData = [
-    {
-      id: 1,
-      eventName: "Summer Waves Fest",
-      eventDate: "Aug 24, 2023",
-      buyerName: "Olivia Rhye",
-      transactionId: "#TRX-88392",
-      email: "olivia@untitledui.com",
-      phone: "+1 (555) 123-4567",
-      city: "San Francisco",
-      quantity: 2,
-      totalPrice: "$240.00",
-      status: "Paid",
-      statusColor: "green",
-      image:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuCxqPXHwktfv4W_WwXE52BW0hDZvKdRyq8mkpB9UtWryBN_n9QkoNIEtAZA4oBbzJGx44HXLcBgZoMhuiwSlp9903RbB0D04zZiC1ZdjF300L-_Au3U6O2c26jSrJ1JuwmpAlakGWdpTuXtkbq2D3kX8kuEYoT6t5oEntAcfmltAsg3GiYYA-DiT_IkgnZBsQTZc4vMZOetlGzpe2Ypdq5WqnyHMJH49AJQVEymYuERv5l7WhllBp9qgBYKZJ55wANoH14qmON6sPjl",
-      hasImage: true,
-    },
-    {
-      id: 2,
-      eventName: "Tech Summit 2024",
-      eventDate: "Sep 12, 2023",
-      buyerName: "Phoenix Baker",
-      transactionId: "#TRX-88391",
-      email: "phoenix@baker.com",
-      phone: "+1 (555) 987-6543",
-      city: "New York",
-      quantity: 1,
-      totalPrice: "$850.00",
-      status: "Paid",
-      statusColor: "green",
-      image:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuC_IPhFStUZZbVuUL5DMEteCfrl1kJajcn4s9QalLUVA0YsDdq95IC5nS2dMq7YbYuJwOxqJLq5T9opA0R2xYXyLwLTdSBOTRQSYt68fUk8F-yWPRldOfZSqu-y3xPj85jHPNyZlb4OipXy3cuI6t4jbqp44qsz_r_vGZxFxC6YuyZmb6SaOFF-Q3iGkxSY6W6xnT5opNQPbPFjEqdZq7Z93BvJNqRJWTsHrhrKkC40sOb5o13lLWCCQZCQ-sH_uDDhTUjLdU7AlGNI",
-      hasImage: true,
-    },
-    {
-      id: 3,
-      eventName: "Comedy Night Live",
-      eventDate: "Oct 05, 2023",
-      buyerName: "Lana Steiner",
-      transactionId: "#TRX-88390",
-      email: "lana@company.com",
-      phone: "+44 20 7123 4567",
-      city: "London",
-      quantity: 4,
-      totalPrice: "$120.00",
-      status: "Refunded",
-      statusColor: "red",
-      hasImage: false,
-      // icon: "theater_comedy",
-      // iconBg: "indigo",
-    },
-    {
-      id: 4,
-      eventName: "Art Workshop",
-      eventDate: "Nov 11, 2023",
-      buyerName: "Demi Wilkinson",
-      transactionId: "#TRX-88389",
-      email: "demi@design.com",
-      phone: "+1 (555) 234-5678",
-      city: "Melbourne",
-      quantity: 1,
-      totalPrice: "$45.00",
-      status: "Pending",
-      statusColor: "yellow",
-      image:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuDQ7JWp5hwkk4_Xsc6PHRsz-BCmVNlJbkFf9_csR70gT1L65Ha5XX2hvLsjo-SDeUz3v3qqZROJ7smgpBgqLCtAE0WJC3dW6xz5xM6t4wV7fMj6DA6_uuV8wUV7PUljssfhszen9UdkWIJd8PA2uNpuhdyMPP4p21pROCGmGOFX6_YhCHrtfSt-uAFcGRexGuVRa86ngccWA-W1xFp9VFDoJ9QgdyskuBfUl1sUfer3Ux0QsqVYVHb94APyWjlRx1Tf6hZY5J_-KCxw",
-      hasImage: true,
-    },
-    {
-      id: 5,
-      eventName: "Neon Nights",
-      eventDate: "Dec 01, 2023",
-      buyerName: "Candice Wu",
-      transactionId: "#TRX-88388",
-      email: "candice@wu.com",
-      phone: "+1 (555) 345-6789",
-      city: "Toronto",
-      quantity: 3,
-      totalPrice: "$180.00",
-      status: "Paid",
-      statusColor: "green",
-      image:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuAmaV0Yl6YshMBe7B85dbQjZAqyjzuxiW93GLOuKCIZWnTDd_liap78qhzjdjUMTKEIGLwXHgj7Nmxa3mcHqes890gl3ctDYbu7yRH-Ry0NFaCUoZ62OY_Pl-AIhF76y-aH3EAO4jLrkzaQGdoRCDwhC1dte1uRm4XbkHc-wzMeZjJMA-i-5b7OWUNdWrSHGIa5Vt9Cw8C47PHEu3VeMBfMl7l8zJ1RAb8vtXTp7h2n_z_PxtZaY5iUMw6LBFJONeXMbntatl74Q4d2",
-      hasImage: true,
-    },
-    {
-      id: 6,
-      eventName: "Food Truck Festival",
-      eventDate: "Dec 15, 2023",
-      buyerName: "Natali Craig",
-      transactionId: "#TRX-88387",
-      email: "natali@craig.com",
-      phone: "+1 (555) 456-7890",
-      city: "Austin",
-      quantity: 6,
-      totalPrice: "$60.00",
-      status: "Paid",
-      statusColor: "green",
-      hasImage: false,
-      // icon: "restaurant",
-      // iconBg: "pink",
-    },
-  ];
+  const [tickets, setTicket] = useState<Tickets[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [paginationInfo, setPaginationInfo] = useState<PaginationInfo | null>(
+    null,
+  );
+  const [currentPage, setCurrentPage] = useState(1);
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const [search, setSearch] = useState("");
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  // Status filter options
-  const statusOptions = ["All Statuses", "Completed", "Refunded", "Pending"];
+  
+  const fetchTickets = async (
+    page: number = 1,
+    search: string,
+    from: string,
+    to: string,
+  ) => {
+    setLoading(true);
+    try {
+      const res = await fetch(
+        `/api/admin/orders?page=${page}&search=${search}&from=${from}&to=${to}`,
+      );
+      const data: apiResTicket = await res.json();
+      setTicket(data.data);
+      setPaginationInfo(data.Pagination);
+    } catch (error) {
+      console.error("Error ", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // Pagination data
-  const pagination = {
-    currentPage: 1,
-    totalPages: 12,
-    showingFrom: 1,
-    showingTo: 6,
-    totalResults: 128,
+  useEffect(() => {
+    const pageFromUrl = Number(searchParams.get("page") || 1);
+    const searchFromUrl = searchParams.get("search") || "";
+    const fromFromUrl = searchParams.get("from") || "";
+    const toFromUrl = searchParams.get("to") || "";
+
+    setCurrentPage(pageFromUrl);
+    setSearch(searchFromUrl);
+    setFrom(fromFromUrl);
+    setTo(toFromUrl);
+
+    const load = () => {
+      fetchTickets(pageFromUrl, searchFromUrl, fromFromUrl, toFromUrl);
+    };
+    load();
+  }, [searchParams]);
+
+  const goToPage = (page: number) => {
+    if (page >= 1 && paginationInfo && paginationInfo.totalPage >= page) {
+      const params = new URLSearchParams(searchParams.toString());
+
+      params.set("page", page.toString());
+      router.push(`/admin/orders?${params.toString()}`);
+    }
+  };
+
+  const generatePages = () => {
+    if (!paginationInfo) return;
+    const { currentPage, totalPage } = paginationInfo;
+    const arrayPages: (string | number)[] = [];
+
+    if (totalPage <= 7) {
+      for (let i = 1; i <= totalPage; i++) {
+        arrayPages.push(i);
+      }
+    } else {
+      arrayPages.push(1);
+      if (currentPage <= 3) {
+        arrayPages.push(2, 3, 4, "...", totalPage);
+      } else if (currentPage > totalPage - 2) {
+        arrayPages.push("...", totalPage - 2, totalPage - 1, totalPage);
+      } else {
+        arrayPages.push(
+          "...",
+          currentPage - 1,
+          currentPage,
+          currentPage + 1,
+          "...",
+          totalPage,
+        );
+      }
+    }
+
+    return arrayPages;
   };
 
   return (
     <div className="font-display bg-background-light text-slate-800 antialiased bg-[#f6f6f8] min-h-screen flex">
-      {/* SideBar */}
       <Sidebar />
 
-      {/* Main Content - with sidebar offset */}
       <div className="flex-1 flex flex-col ml-64">
-        {/* Main Content */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-[1920px] mx-auto w-full">
-          {/* Header Section */}
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-480 mx-auto w-full">
+          {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
               <h1 className="text-2xl font-bold text-slate-900">
@@ -143,199 +116,304 @@ export default function SoldTicketsLog() {
             </div>
           </div>
 
-          {/* Filters & Toolbar */}
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 mb-6">
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
-              {/* Search */}
-              <div className="col-span-1 md:col-span-5 relative group">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          {/* Filters */}
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 mb-5">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+              <div className="col-span-1 md:col-span-5 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                   <CiSearch />
                 </div>
                 <input
-                  className="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-lg leading-5 bg-slate-50 text-slate-900 placeholder-slate-400 focus:outline-none sm:text-sm transition-shadow"
-                  placeholder="Search by buyer name, email, or event..."
+                  className="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-slate-900 placeholder-slate-400 focus:outline-none sm:text-sm"
+                  placeholder="Search by buyer name..."
+                  value={search}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    // update state
+                    setSearch(value);
+                    // keep url when typing for search
+                    const params = new URLSearchParams(searchParams.toString());
+
+                    if (value) {
+                      params.set("search", value);
+                    } else {
+                      params.delete("search");
+                    }
+                    params.set("page", "1");
+                    router.push(`/admin/orders?${params.toString()}`);
+                  }}
                   type="text"
                 />
               </div>
-              {/* Date Filter */}
               <div className="col-span-1 md:col-span-4 flex items-center gap-2">
-                <div className="relative flex-1">
+                <div className="flex flex-col w-full">
+                  <span className="text-xs text-slate-400 mb-1 pl-1">From</span>
                   <input
-                    className="block w-full pl-3 pr-10 py-2.5 border border-slate-200 rounded-lg bg-slate-50 text-slate-600 sm:text-sm"
+                    className="block w-full pl-3 pr-3 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-slate-600 sm:text-sm"
                     type="date"
+                    value={from}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // update state
+                      setFrom(value);
+                      // keep url when user give from date
+                      const params = new URLSearchParams(searchParams.toString());
+
+                      if (value) {
+                        // put value in url
+                        params.set("from", value);
+                      } else {
+                        // remove value from url
+                        params.delete("from");
+                      }
+                      params.set("page", "1");
+                      router.push(`/admin/orders?${params.toString()}`);
+                    }}
                   />
                 </div>
-                <span className="text-slate-400">-</span>
-                <div className="relative flex-1">
+                <div className="flex flex-col w-full">
+                  <span className="text-xs text-slate-400 mb-1 pl-1">To</span>
                   <input
-                    className="block w-full pl-3 pr-10 py-2.5 border border-slate-200 rounded-lg bg-slate-50 text-slate-600 sm:text-sm"
+                    className="block w-full pl-3 pr-3 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-slate-600 sm:text-sm"
                     type="date"
+                    value={to}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // update state
+                      setTo(value);
+                      // keep url when user give to value
+                      const params = new URLSearchParams(searchParams.toString());
+
+                      if (value) {
+                        // put value in url
+                        params.set("to", value);
+                      } else {
+                        // remove value from url
+                        params.delete("to");
+                      }
+                      params.set("page", "1");
+                      router.push(`/admin/orders?${params.toString()}`);
+                    }}
                   />
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Data Table Container */}
-          <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-[600px]">
-            {/* Table Header (Sticky) */}
-            <div className="overflow-auto custom-scrollbar flex-1 relative">
-              <table className="min-w-full divide-y divide-slate-200">
-                <thead className="bg-slate-50 sticky top-0 z-10 backdrop-blur-sm">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="sticky top-0 px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap bg-slate-50 shadow-sm"
-                    >
-                      <div className="flex items-center gap-1 cursor-pointer hover:text-primary transition-colors">
-                        Event Name
-                      </div>
+          {/* Table */}
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col h-162.5">
+            <div className="flex-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+              <table className="min-w-full">
+                <thead>
+                  <tr className="border-b border-slate-100">
+                    <th className="sticky top-0 px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider bg-white">
+                      Event
                     </th>
-                    <th
-                      scope="col"
-                      className="sticky top-0 px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap bg-slate-50 shadow-sm"
-                    >
+                    <th className="sticky top-0 px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider bg-white">
                       Buyer
                     </th>
-                    <th
-                      scope="col"
-                      className="sticky top-0 px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap bg-slate-50 shadow-sm"
-                    >
+                    <th className="sticky top-0 px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider bg-white">
                       Contact
                     </th>
-                    <th
-                      scope="col"
-                      className="sticky top-0 px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap bg-slate-50 shadow-sm"
-                    >
+                    <th className="sticky top-0 px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider bg-white">
                       City
                     </th>
-                    <th
-                      scope="col"
-                      className="sticky top-0 px-6 py-4 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap bg-slate-50 shadow-sm"
-                    >
+                    <th className="sticky top-0 px-6 py-4 text-center text-xs font-semibold text-slate-400 uppercase tracking-wider bg-white">
                       Qty
                     </th>
-                    <th
-                      scope="col"
-                      className="sticky top-0 px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider whitespace-nowrap bg-slate-50 shadow-sm"
-                    >
-                      <div className="flex items-center justify-end gap-1 cursor-pointer hover:text-primary transition-colors">
-                        Total Price
-                      </div>
+                    <th className="sticky top-0 px-6 py-4 text-right text-xs font-semibold text-slate-400 uppercase tracking-wider bg-white">
+                      Total
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-200 bg-white">
-                  {tableData.map((row) => (
-                    <tr
-                      key={row.id}
-                      className="hover:bg-slate-50 transition-colors group"
-                    >
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="h-10 w-10 flex-shrink-0">
-                            {row.hasImage ? (
-                              <img
-                                alt={row.eventName}
-                                className="h-10 w-10 rounded-lg object-cover"
-                                src={row.image}
-                              />
-                            ) : (
-                              <></>
-                            )}
-                          </div>
-                          <div className="ml-4">
-                            <div className="text-sm font-medium text-slate-900">
-                              {row.eventName}
-                            </div>
-                            <div className="text-xs text-slate-500">
-                              {row.eventDate}
+                <tbody>
+                  {/* Loading */}
+                  {loading &&
+                    Array.from({ length: 6 }).map((_, i) => (
+                      <tr
+                        key={i}
+                        className="border-b border-slate-50 animate-pulse"
+                      >
+                        {/* Event - matches w-14 h-14 image + two lines */}
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="h-14 w-14 rounded-lg bg-slate-100 shrink-0" />
+                            <div className="space-y-2">
+                              <div className="h-3 w-28 bg-slate-100 rounded-full" />
+                              <div className="h-2 w-16 bg-slate-100 rounded-full" />
                             </div>
                           </div>
+                        </td>
+                        {/* Buyer */}
+                        <td className="px-6 py-4">
+                          <div className="h-3 w-24 bg-slate-100 rounded-full" />
+                        </td>
+                        {/* Contact */}
+                        <td className="px-6 py-4 space-y-2">
+                          <div className="h-3 w-36 bg-slate-100 rounded-full" />
+                          <div className="h-2 w-24 bg-slate-100 rounded-full" />
+                        </td>
+                        {/* City */}
+                        <td className="px-6 py-4">
+                          <div className="h-3 w-16 bg-slate-100 rounded-full" />
+                        </td>
+                        {/* Qty - matches the badge */}
+                        <td className="px-6 py-4 text-center">
+                          <div className="h-7 w-7 rounded-lg bg-slate-100 mx-auto" />
+                        </td>
+                        {/* Total */}
+                        <td className="px-6 py-4 text-right">
+                          <div className="h-3 w-14 bg-slate-100 rounded-full ml-auto" />
+                        </td>
+                      </tr>
+                    ))}
+
+                  {/* Empty */}
+                  {!loading && tickets.length === 0 && (
+                    <tr>
+                      <td colSpan={6} className="px-6 py-20 text-center">
+                        <div className="flex flex-col items-center gap-3">
+                          <div className="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center">
+                            <span className="text-2xl">🎟️</span>
+                          </div>
+                          <p className="text-sm font-semibold text-slate-700">
+                            No tickets yet
+                          </p>
+                          <p className="text-xs text-slate-400">
+                            Tickets will appear here once orders come in
+                          </p>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-slate-900 font-medium">
-                          {row.buyerName}
-                        </div>
-                        <div className="text-xs text-slate-500">
-                          {row.transactionId}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-slate-900">
-                          {row.email}
-                        </div>
-                        <div className="text-xs text-slate-500">
-                          {row.phone}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="text-sm text-slate-700">
-                          {row.city}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-center text-sm text-slate-700 tabular-nums">
-                        {row.quantity}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-semibold text-slate-900 tabular-nums">
-                        {row.totalPrice}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"></td>
                     </tr>
-                  ))}
+                  )}
+
+                  {/* Data */}
+                  {!loading &&
+                    tickets.map((row) => (
+                      <tr
+                        key={row.id}
+                        className="border-b border-slate-50 mr-14 hover:bg-slate-50/60 transition-colors"
+                      >
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center gap-3">
+                            <img
+                              src={row.event.image}
+                              alt={row.event.title}
+                              className="w-14 h-14 rounded-lg object-cover"
+                            />
+                            <div>
+                              <div className="text-sm font-semibold text-slate-800">
+                                {row.event.title}
+                              </div>
+                              <div className="text-xs text-slate-400 mt-0.5">
+                                {new Date(
+                                  row.event.eventDate,
+                                ).toLocaleDateString("en-US", {
+                                  month: "short",
+                                  day: "numeric",
+                                  year: "numeric",
+                                })}
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-slate-800">
+                            {row.buyer.name}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-slate-700">
+                            {row.buyer.email}
+                          </div>
+                          <div className="text-xs text-slate-400 mt-0.5">
+                            {row.buyer.phone}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="text-sm text-slate-600">
+                            {row.city.name}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4  whitespace-nowrap text-center">
+                          <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-slate-100 text-xs font-semibold text-slate-700">
+                            {row.quantity}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap mr-14 text-right">
+                          <span className="text-sm font-bold text-slate-900">
+                            ${row.totalPrice}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>
 
             {/* Pagination */}
-            <div className="border-t border-slate-200 bg-white px-6 py-4">
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="flex-1 text-sm text-slate-500 text-center sm:text-left">
-                  Showing{" "}
-                  <span className="font-medium text-slate-900">
-                    {pagination.showingFrom}
-                  </span>{" "}
-                  to{" "}
-                  <span className="font-medium text-slate-900">
-                    {pagination.showingTo}
-                  </span>{" "}
-                  of{" "}
-                  <span className="font-medium text-slate-900">
-                    {pagination.totalResults}
-                  </span>{" "}
-                  results
+            {paginationInfo && paginationInfo.totalPage > 1 && (
+              <div className="border-t border-slate-100 bg-white px-6 py-4">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <p className="text-sm text-slate-400">
+                    Showing{" "}
+                    <span className="font-semibold text-slate-700">
+                      {paginationInfo.offset + 1}
+                    </span>{" "}
+                    to{" "}
+                    <span className="font-semibold text-slate-700">
+                      {tickets.length + paginationInfo.offset}
+                    </span>{" "}
+                    of{" "}
+                    <span className="font-semibold text-slate-700">
+                      {paginationInfo.totalItems}
+                    </span>{" "}
+                    results
+                  </p>
+
+                  <nav className="inline-flex items-center gap-1">
+                    <button
+                      disabled={!paginationInfo?.hasPrevPage}
+                      onClick={() => goToPage(currentPage - 1)}
+                      className={`p-2 rounded-lg border border-slate-200 text-slate-500 
+                        ${!paginationInfo?.hasPrevPage ? " " : "hover:bg-slate-200"}
+                         transition-colors`}
+                    >
+                      <FaArrowLeftLong className="text-xs" />
+                    </button>
+
+                    {generatePages()?.map((numPage, index) => (
+                      <React.Fragment key={index}>
+                        <button
+                          onClick={() => goToPage(numPage as number)}
+                          className={`w-9 h-9 rounded-lg border border-slate-200
+                       ${currentPage === numPage ? "bg-slate-900 text-white" : "text-slate-500 hover:bg-slate-200 "}
+                        text-slate-500 text-sm transition-colors`}
+                        >
+                          {numPage === "..." ? (
+                            <span className="w-9 h-9 inline-flex items-center justify-center text-slate-400 text-sm">
+                              ...
+                            </span>
+                          ) : (
+                            numPage
+                          )}
+                        </button>
+                      </React.Fragment>
+                    ))}
+
+                    <button
+                      disabled={!paginationInfo?.hasNextPage}
+                      onClick={() => goToPage(currentPage + 1)}
+                      className={`p-2 rounded-lg border border-slate-200 text-slate-500 
+                        ${!paginationInfo?.hasNextPage ? "" : "hover:bg-slate-200"}
+                         transition-colors`}
+                    >
+                      <FaArrowRight className="text-xs" />
+                    </button>
+                  </nav>
                 </div>
-                <nav
-                  aria-label="Pagination"
-                  className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
-                >
-                  <button className="relative inline-flex items-center px-3 py-2 rounded-l-md border border-slate-300 bg-white text-sm font-medium text-slate-500 hover:bg-slate-50">
-                    <span className="sr-only">Previous</span>
-                    <FaArrowLeftLong />
-                  </button>
-                  <button className="relative inline-flex items-center px-4 py-2 border border-slate-300 bg-primary/10 text-sm font-medium text-primary hover:bg-primary/20 z-10">
-                    1
-                  </button>
-                  <button className="relative inline-flex items-center px-4 py-2 border border-slate-300 bg-white text-sm font-medium text-slate-500 hover:bg-slate-50">
-                    2
-                  </button>
-                  <button className="relative inline-flex items-center px-4 py-2 border border-slate-300 bg-white text-sm font-medium text-slate-500 hover:bg-slate-50 hidden md:inline-flex">
-                    3
-                  </button>
-                  <span className="relative inline-flex items-center px-4 py-2 border border-slate-300 bg-white text-sm font-medium text-slate-700">
-                    ...
-                  </span>
-                  <button className="relative inline-flex items-center px-4 py-2 border border-slate-300 bg-white text-sm font-medium text-slate-500 hover:bg-slate-50">
-                    {pagination.totalPages}
-                  </button>
-                  <button className="relative inline-flex items-center px-3 py-2 rounded-r-md border border-slate-300 bg-white text-sm font-medium text-slate-500 hover:bg-slate-50">
-                    <span className="sr-only">Next</span>
-                    <FaArrowRight />
-                  </button>
-                </nav>
               </div>
-            </div>
+            )}
           </div>
         </main>
       </div>
