@@ -75,3 +75,8 @@ export interface apiResTicket {
   data: Tickets[];
   Pagination: PaginationInfo;
 }
+
+export interface apiResCards {
+  eventData: EventForm[];
+  ticketData: Tickets[]
+}
