@@ -52,6 +52,35 @@ const EventsSales = () => {
     }
   };
 
+  const generateArray = () => {
+    if (!paginationInfo) return;
+    const { currentPage, totalPage } = paginationInfo;
+    const arrayPagination: (string | number)[] = [];
+
+    if (totalPage <= 7) {
+      for (let i = 1; i <= totalPage; i++) {
+        arrayPagination.push(i);
+      }
+    } else {
+      arrayPagination.push(1);
+      if (currentPage <= 3) {
+        arrayPagination.push(2, 3, 4, "...", totalPage);
+      } else if (currentPage > totalPage - 2) {
+        arrayPagination.push("...", totalPage - 2, totalPage - 1, totalPage);
+      } else {
+        arrayPagination.push(
+          "...",
+          currentPage - 1,
+          currentPage,
+          currentPage + 1,
+          "...",
+          totalPage,
+        );
+      }
+    }
+    return arrayPagination;
+  };
+
   return (
     <div>
       <div className="flex justify-between mt-16 items-center mb-5">
@@ -165,9 +194,14 @@ const EventsSales = () => {
                   >
                     <td className="py-4 px-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center">
-                          <Activity className="w-5 h-5 text-white" />
+                        <div className="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center overflow-hidden">
+                          <img
+                            src={event.image}
+                            alt={event.title}
+                            className="w-full h-full object-cover"
+                          />
                         </div>
+
                         <div>
                           <div className="font-medium text-gray-900">
                             {event.title}
@@ -213,7 +247,9 @@ const EventsSales = () => {
         {paginationInfo && paginationInfo.totalPage > 1 && (
           <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
             <span className="text-sm text-gray-500">
-              Showing 1 to 6 of 24 entries
+              Showing {paginationInfo.offset + 1} to{" "}
+              {paginationInfo.offset + events.length} of{" "}
+              {paginationInfo.totalItems} entries
             </span>
             <div className="flex items-center gap-2">
               <button
@@ -225,15 +261,24 @@ const EventsSales = () => {
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
-              <button className="p-2 px-4 bg-blue-600 text-white rounded-lg text-sm">
-                1
-              </button>
-              <button className="p-2 px-4 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50">
-                2
-              </button>
-              <button className="p-2 px-4 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50">
-                3
-              </button>
+
+              {generateArray()?.map((pageNum, index) => (
+                <React.Fragment key={index}>
+                  {pageNum === "..." ? (
+                    <span className="px-2 text-slate-400">•••</span>
+                  ) : (
+                    <button
+                      onClick={() => goToPage(pageNum as number)}
+                      className={`p-2 px-4 border border-gray-200 rounded-lg 
+                        ${currentPage === pageNum ? "bg-blue-600 text-white" : "hover:bg-gray-200 text-gray-600"}
+                        text-sm  `}
+                    >
+                      {pageNum}
+                    </button>
+                  )}
+                </React.Fragment>
+              ))}
+
               <button
                 onClick={() => goToPage(currentPage + 1)}
                 disabled={!paginationInfo.hasNextPage}

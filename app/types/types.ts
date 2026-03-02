@@ -85,6 +85,7 @@ export interface TopEvent {
   id: string;
   title: string;
   location: string;
+  image: string
   category: string;
   city: string
   date: string;

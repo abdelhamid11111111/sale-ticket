@@ -18,39 +18,44 @@ export async function GET(req: NextRequest) {
 
     const offset = (page - 1) * ITEMS_PER_PAGE;
 
-    // Fetch once + compute + sort + paginate (1 query, super simple & clean)
+    // fetch all data or data include search value 
     const allEvents = await prisma.event.findMany({
       where: {
-        title: { contains: search, mode: "insensitive" },
+        title: {contains: search, mode: 'insensitive'}
       },
       include: {
-        category: true,
         city: true,
+        category: true,
         tickets: {
-          select: { quantity: true, totalPrice: true },
-        },
-      },
-    });
+          select: {
+            totalPrice: true,
+            quantity: true
+          }
+        }
+      }
+    })
 
-    // Map, sort by revenue (highest first), then paginate
-    const data = allEvents
-      .map((event) => {
-        const ticketsSold = event.tickets.reduce( (sum, t) => sum + t.quantity, 0,);
-        const revenue = event.tickets.reduce( (sum, t) => sum + Number(t.totalPrice), 0,);
+    // trait data we fetch to by sorting and pagination
+    const data = allEvents.map((event) => {
+      const revenue = event.tickets.reduce((acc, ticket) => acc + parseFloat(ticket.totalPrice.toString()), 0,)
+      const totalQuantity = event.tickets.reduce((acc, ticket) => acc + Number(ticket.quantity), 0,)
 
-        return {
-          id: event.id,
-          title: event.title,
-          location: event.location,
-          city: event.city.name,
-          category: event.category.name,
-          date: event.eventDate,
-          ticketsSold,
-          revenue,
-        };
-      })
-      .sort((a, b) => b.revenue - a.revenue) // revenue high → low (0$ events at bottom)
-      .slice(offset, offset + ITEMS_PER_PAGE);
+      return {
+        id: event.id,
+        title: event.title,
+        date: event.eventDate,
+        image: event.image,
+        location: event.location,
+        city: event.city.name,
+        category: event.category.name,
+        revenue: revenue,
+        ticketsSold: totalQuantity
+      }
+
+    }).sort((a, b) => b.revenue - a.revenue) // sorting revenue
+    .slice(offset, offset + ITEMS_PER_PAGE)
+
+    
 
     // Optional: if you still need total count
     const totalItems = allEvents.length;
