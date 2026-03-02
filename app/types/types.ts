@@ -116,3 +116,8 @@ export interface CityPercentage {
   revenue: number
   totalRevenue: number
 }
+
+export interface SortedCategory{
+  name: string;
+  revenue: number
+}
