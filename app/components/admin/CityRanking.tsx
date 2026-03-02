@@ -1,28 +1,84 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import { Search, ChevronLeft, ChevronRight } from "lucide-react";
-
-const cityData = [
-  {
-    rank: 1,
-    code: "NY",
-    name: "New York",
-    tickets: 15408,
-    contribution: 18.1,
-  },
-  { rank: 2, code: "LD", name: "London", tickets: 12290, contribution: 14.5 },
-  { rank: 3, code: "TK", name: "Tokyo", tickets: 9855, contribution: 11.2 },
-  { rank: 4, code: "PA", name: "Paris", tickets: 8420, contribution: 9.8 },
-  {
-    rank: 5,
-    code: "LA",
-    name: "Los Angeles",
-    tickets: 7150,
-    contribution: 8.1,
-  },
-  { rank: 6, code: "BE", name: "Berlin", tickets: 5980, contribution: 6.5 },
-];
+import { PaginationInfo, TopCity, apiResTopCities } from "@/app/types/types";
+import { useRouter, useSearchParams } from "next/navigation";
 
 function CityRanking() {
+  const [city, setCity] = useState<TopCity[]>([]);
+  const [search, setSearch] = useState("");
+  const [paginationInfo, setPaginationInfo] = useState<PaginationInfo | null>(
+    null,
+  );
+  const [currentPage, setCurrentPage] = useState(1);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const fetchCitiesData = async (page: number = 1, search: string) => {
+    try {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("cityrankingpage", page.toString());
+      params.set("cityrankingsearch", search);
+
+      const res = await fetch(`/api/admin/city?${params}`);
+      const data: apiResTopCities = await res.json();
+      setCity(data.data);
+      setPaginationInfo(data.Pagination);
+    } catch (error) {
+      console.error("Error ", error);
+    }
+  };
+
+  useEffect(() => {
+    const pageFromUrl = Number(searchParams.get("cityrankingpage") || "1");
+    const searchFromUrl = searchParams.get("cityrankingsearch") || "";
+
+    const load = () => {
+      setCurrentPage(pageFromUrl);
+      setSearch(searchFromUrl);
+
+      fetchCitiesData(pageFromUrl, searchFromUrl);
+    };
+    load();
+  }, [searchParams]);
+
+  const goToPage = (page: number) => {
+    if (page >= 1 && paginationInfo && paginationInfo.totalPage >= page) {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("cityrankingpage", page.toString());
+      router.push(`/admin/dashboard/?${params}`, { scroll: false });
+    }
+  };
+
+  const generateArray = () => {
+    if (!paginationInfo) return;
+    const { currentPage, totalPage } = paginationInfo;
+    const generatePagination: (string | number)[] = [];
+
+    if (totalPage <= 7) {
+      for (let i = 1; i <= totalPage; i++) {
+        generatePagination.push(i);
+      }
+    } else {
+      generatePagination.push(1);
+      if (currentPage <= 3) {
+        generatePagination.push(2, 3, 4, "...", totalPage);
+      } else if (currentPage > totalPage - 2) {
+        generatePagination.push("...", totalPage - 2, totalPage - 1, totalPage);
+      } else {
+        generatePagination.push(
+          "...",
+          currentPage - 1,
+          currentPage,
+          currentPage + 1,
+          "...",
+          totalPage,
+        );
+      }
+    }
+    return generatePagination;
+  };
+
   return (
     <div className="col-span-2 bg-white p-6 rounded-xl border border-gray-200">
       <div className="flex justify-between items-center mb-6">
@@ -31,89 +87,142 @@ function CityRanking() {
           <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
           <input
             type="text"
+            value={search}
+            onChange={(e) => {
+              const value = e.target.value;
+              setSearch(value);
+              const params = new URLSearchParams(searchParams.toString());
+              params.set("cityrankingpage", "1");
+              if (value) {
+                params.set("cityrankingsearch", value);
+              } else {
+                params.delete("cityrankingsearch");
+              }
+              router.push(`/admin/dashboard?${params.toString()}`, {
+                scroll: false,
+              });
+            }}
             placeholder="Search city..."
-            className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="pl-10 pr-4 py-2 border text-black border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
       </div>
 
-      <table className="w-full">
-        <thead>
-          <tr className="border-b border-gray-200">
-            <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">
-              Rank
-            </th>
-            <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">
-              City Name
-            </th>
-            <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase">
-              Tickets Sold
-            </th>
-            <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase">
-              % Contribution
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {cityData.map((city) => (
-            <tr
-              key={city.rank}
-              className="border-b border-gray-100 hover:bg-gray-50"
-            >
-              <td className="py-4 px-4 text-sm text-gray-600">#{city.rank}</td>
-              <td className="py-4 px-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <span className="text-xs font-bold text-blue-600">
-                      {city.code}
+      <div className="min-h-[360px]">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-gray-200">
+              <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">
+                Rank
+              </th>
+              <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">
+                City Name
+              </th>
+              <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase">
+                Tickets Sold
+              </th>
+              <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase">
+                Gross Revenue
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {city.map((city, index) => (
+              <tr
+                key={index}
+                className="border-b border-gray-100 hover:bg-gray-50"
+              >
+                <td className="py-4 px-4 text-sm text-gray-600">
+                  #{city.ranking}
+                </td>
+                <td className="py-4 px-4">
+                  <div className="flex items-center gap-3">
+                    <span className="font-medium text-gray-900">
+                      {city.city}
                     </span>
                   </div>
-                  <span className="font-medium text-gray-900">{city.name}</span>
-                </div>
-              </td>
-              <td className="py-4 px-4 text-right text-sm text-gray-900">
-                {city.tickets.toLocaleString()}
-              </td>
-              <td className="py-4 px-4 text-right">
-                <div className="flex items-center justify-end gap-2">
-                  <span className="text-sm text-gray-900">
-                    {city.contribution}%
-                  </span>
-                  <div className="w-16 bg-gray-100 rounded-full h-1.5">
-                    <div
-                      className="bg-blue-600 h-1.5 rounded-full"
-                      style={{ width: `${city.contribution * 5}%` }}
-                    />
-                  </div>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                </td>
+                <td className="py-4 px-4 text-right text-sm text-gray-900">
+                  {city.ticketsSold}
+                </td>
+                <td className="py-4 px-4 text-right">
+                  <span className="text-sm text-gray-900">${city.revenue}</span>
+                </td>
+              </tr>
+            ))}
 
-      <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
-        <span className="text-sm text-gray-500">
-          Showing 1 to 6 of 24 entries
-        </span>
-        <div className="flex items-center gap-2">
-          <button className="px-3 py-1 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50">
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-          <button className="px-3 py-1 bg-blue-600 text-white rounded-lg text-sm">
-            1
-          </button>
-          <button className="px-3 py-1 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50">
-            2
-          </button>
-          <button className="px-3 py-1 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50">
-            3
-          </button>
-          <button className="px-3 py-1 border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50">
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
+            {/* Filler rows */}
+            {city.length < 6 &&
+              Array.from({ length: 6 - city.length }).map((_, i) => (
+                <tr key={`empty-${i}`} className="border-b border-gray-100">
+                  <td className="py-4 px-4 text-sm text-gray-600">&nbsp;</td>
+
+                  <td className="py-4 px-4">
+                    <div className="flex items-center gap-3">
+                      <span className="font-medium text-gray-900 invisible">
+                        placeholder
+                      </span>
+                    </div>
+                  </td>
+
+                  <td className="py-4 px-4 text-right text-sm text-gray-900">
+                    &nbsp;
+                  </td>
+
+                  <td className="py-4 px-4 text-right">
+                    <span className="text-sm text-gray-900">&nbsp;</span>
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
       </div>
+      {paginationInfo && paginationInfo.totalPage > 1 && (
+        <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
+          <span className="text-sm text-gray-500">
+            Showing {paginationInfo.offset + 1} to{" "}
+            {paginationInfo.offset + city.length} of {paginationInfo.totalItems}{" "}
+            entries
+          </span>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => goToPage(currentPage - 1)}
+              className={`p-2 border border-gray-200 rounded-lg text-sm
+            ${!paginationInfo.hasPrevPage ? "" : "hover:bg-gray-200"}
+           text-gray-600 `}
+            >
+              <ChevronLeft className="w-4 h-4"  />
+            </button>
+
+            {generateArray()?.map((numPage, index) => (
+              <React.Fragment key={index}>
+                {numPage === "..." ? (
+                  <span className="px-2 text-slate-400">•••</span>
+                ) : (
+                  <button
+                    onClick={() => goToPage(numPage as number)}
+                    className={`p-2 px-4  border border-gray-200 
+              ${currentPage === numPage ? "bg-blue-600 text-white" : "text-gray-600 hover:bg-gray-200"}
+             rounded-lg text-sm `}
+                  >
+                    {numPage}
+                  </button>
+                )}
+              </React.Fragment>
+            ))}
+
+            <button
+              onClick={() => goToPage(currentPage + 1)}
+              disabled={!paginationInfo.hasNextPage}
+              className={`p-2 border border-gray-200
+            ${!paginationInfo.hasNextPage ? "" : "hover:bg-gray-200"}
+            rounded-lg text-sm text-gray-600 `}
+            >
+              <ChevronRight className="w-4 h-4"  />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

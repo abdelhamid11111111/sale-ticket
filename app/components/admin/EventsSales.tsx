@@ -20,7 +20,7 @@ const EventsSales = () => {
     setLoading(true);
     try {
       const res = await fetch(
-        `/api/admin/eventsales?page=${page}&search=${search}`,
+        `/api/admin/eventsales?eventsalespage=${page}&eventsalessearch=${search}`,
       );
       const data: apiResTopEvents = await res.json();
       setEvents(data.data);
@@ -32,8 +32,8 @@ const EventsSales = () => {
     }
   };
   useEffect(() => {
-    const pageFromURL = Number(searchParams.get("page") || "1");
-    const searchFromURL = searchParams.get("search") || "";
+    const pageFromURL = Number(searchParams.get("eventsalespage") || "1");
+    const searchFromURL = searchParams.get("eventsalessearch") || "";
 
     const load = () => {
       setCurrentPage(pageFromURL);
@@ -47,7 +47,7 @@ const EventsSales = () => {
     if (page >= 1 && paginationInfo && paginationInfo.totalPage >= page) {
       const params = new URLSearchParams(searchParams.toString());
 
-      params.set("page", page.toString());
+      params.set("eventsalespage", page.toString());
       router.push(`/admin/dashboard?${params.toString()}`, { scroll: false });
     }
   };
@@ -106,9 +106,9 @@ const EventsSales = () => {
                 setSearch(value);
                 const params = new URLSearchParams(searchParams.toString());
                 if (value) {
-                  params.set("search", value);
+                  params.set("eventsalessearch", value);
                 } else {
-                  params.delete("search");
+                  params.delete("eventsalessearch");
                 }
                 params.set("page", "1");
                 router.push(`/admin/dashboard?${params.toString()}`, {

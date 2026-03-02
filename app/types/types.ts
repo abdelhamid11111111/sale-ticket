@@ -97,3 +97,15 @@ export interface apiResTopEvents {
   data: TopEvent[];
   Pagination: PaginationInfo;
 }
+
+export interface TopCity{
+  ranking: number
+  city: string
+  ticketsSold: number
+  revenue: number
+}
+
+export interface apiResTopCities {
+  data: TopCity[];
+  Pagination: PaginationInfo;
+}

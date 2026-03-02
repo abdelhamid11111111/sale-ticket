@@ -6,8 +6,8 @@ const ITEMS_PER_PAGE = 6;
 export async function GET(req: NextRequest) {
   try {
     const searchParams = req.nextUrl.searchParams;
-    const search = searchParams.get("search") || "";
-    const page = Number(searchParams.get("page") || "1");
+    const search = searchParams.get("eventsalessearch") || "";
+    const page = Number(searchParams.get("eventsalespage") || "1");
 
     if (isNaN(page) || page <= 0) {
       return NextResponse.json(
@@ -57,7 +57,7 @@ export async function GET(req: NextRequest) {
 
     
 
-    // Optional: if you still need total count
+    // total count
     const totalItems = allEvents.length;
 
     const totalPage = Math.ceil(totalItems / ITEMS_PER_PAGE);
