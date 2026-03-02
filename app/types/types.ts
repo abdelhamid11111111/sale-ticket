@@ -106,6 +106,13 @@ export interface TopCity{
 }
 
 export interface apiResTopCities {
+  revenueEach: CityPercentage[]
   data: TopCity[];
   Pagination: PaginationInfo;
+}
+
+export interface CityPercentage {
+  name: string
+  revenue: number
+  totalRevenue: number
 }

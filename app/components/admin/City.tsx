@@ -1,17 +1,28 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import CityRanking from "./CityRanking";
-
-
-const visualBreakdown = [
-  { city: "New York", percentage: 15.4, color: "#3B82F6" },
-  { city: "London", percentage: 12.3, color: "#3B82F6" },
-  { city: "Tokyo", percentage: 9.8, color: "#60A5FA" },
-  { city: "Paris", percentage: 8.4, color: "#60A5FA" },
-  { city: "Los Angeles", percentage: 7.1, color: "#93C5FD" },
-  { city: "Berlin", percentage: 5.9, color: "#93C5FD" },
-];
+import { apiResTopCities, CityPercentage, TopCity } from "@/app/types/types";
 
 const City = () => {
+  const [cities, setCities] = useState<CityPercentage[]>([]);
+
+  const fetchData = async () => {
+    try {
+      const res = await fetch("/api/admin/cityData");
+      const data: apiResTopCities = await res.json();
+      setCities(data.revenueEach);
+    } catch (error) {
+      console.error("Error ", error);
+    }
+  };
+
+  useEffect(() => {
+    const load = () => {
+      fetchData();
+    };
+    load();
+  }, []);
+
   return (
     <div>
       <div className="flex justify-between mt-16 items-center mb-5">
@@ -23,9 +34,8 @@ const City = () => {
       </div>
       {/* City Rankings and Visual Breakdown */}
       <div className="grid grid-cols-3 gap-6 mb-8">
-
         {/* City Rankings */}
-        <CityRanking/>
+        <CityRanking />
 
         {/* Visual Breakdown */}
         <div className="bg-white p-6 rounded-xl border border-gray-200">
@@ -33,22 +43,22 @@ const City = () => {
             Visual Breakdown
           </h2>
           <div className="space-y-4">
-            {visualBreakdown.map((item, index) => (
+            {cities.map((item, index) => (
               <div key={index}>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm font-medium text-gray-700">
-                    {item.city}
+                    {item.name}
                   </span>
                   <span className="text-sm font-bold text-gray-900">
-                    {item.percentage}%
+                    {((item.revenue / item.totalRevenue) * 100).toFixed(1)}%
                   </span>
                 </div>
                 <div className="w-full bg-gray-100 rounded-full h-2">
                   <div
                     className="h-2 rounded-full"
                     style={{
-                      width: `${item.percentage * 6}%`,
-                      backgroundColor: item.color,
+                      width: `${(item.revenue / item.totalRevenue) * 100}%`,
+                      backgroundColor: "#3B82F6",
                     }}
                   />
                 </div>
@@ -65,8 +75,10 @@ const City = () => {
                 <span className="text-white text-xs font-bold">i</span>
               </div>
               <p className="text-sm text-gray-600">
-                <span className="font-semibold text-gray-900">New York</span>{" "}
-                accounts for nearly 20% of all ticket sales this quarter.
+                <span className="font-semibold text-gray-900">
+                  {cities[0]?.name}
+                </span>{" "}
+                accounts for nearly 20% of all ticket sales of all time.
                 Consider targeted campaigns in this region.
               </p>
             </div>

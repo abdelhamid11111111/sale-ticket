@@ -11,21 +11,25 @@ function CityRanking() {
     null,
   );
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const fetchCitiesData = async (page: number = 1, search: string) => {
+    setLoading(true);
     try {
       const params = new URLSearchParams(searchParams.toString());
       params.set("cityrankingpage", page.toString());
       params.set("cityrankingsearch", search);
 
-      const res = await fetch(`/api/admin/city?${params}`);
+      const res = await fetch(`/api/admin/cityData?${params}`);
       const data: apiResTopCities = await res.json();
       setCity(data.data);
       setPaginationInfo(data.Pagination);
     } catch (error) {
       console.error("Error ", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -109,73 +113,73 @@ function CityRanking() {
       </div>
 
       <div className="min-h-[360px]">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-gray-200">
-              <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">
-                Rank
-              </th>
-              <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">
-                City Name
-              </th>
-              <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase">
-                Tickets Sold
-              </th>
-              <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase">
-                Gross Revenue
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {city.map((city, index) => (
-              <tr
-                key={index}
-                className="border-b border-gray-100 hover:bg-gray-50"
-              >
-                <td className="py-4 px-4 text-sm text-gray-600">
-                  #{city.ranking}
-                </td>
-                <td className="py-4 px-4">
-                  <div className="flex items-center gap-3">
-                    <span className="font-medium text-gray-900">
-                      {city.city}
-                    </span>
-                  </div>
-                </td>
-                <td className="py-4 px-4 text-right text-sm text-gray-900">
-                  {city.ticketsSold}
-                </td>
-                <td className="py-4 px-4 text-right">
-                  <span className="text-sm text-gray-900">${city.revenue}</span>
-                </td>
-              </tr>
-            ))}
+       <table className="w-full table-fixed">
+  <thead>
+    <tr className="border-b border-gray-200">
+      <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase w-16">
+        Rank
+      </th>
+      <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">
+        City Name
+      </th>
+      <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase w-32">
+        Tickets Sold
+      </th>
+      <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase w-36">
+        Gross Revenue
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    {loading
+      ? Array.from({ length: 6 }).map((_, index) => (
+          <tr key={index} className="border-b border-gray-100">
+            <td className="py-5 px-4">
+              <div className="h-4 w-6 bg-gray-200 rounded animate-pulse" />
+            </td>
+            <td className="py-5 px-4">
+              <div className="h-4 w-3/4 bg-gray-200 rounded animate-pulse" />
+            </td>
+            <td className="py-5 px-4">
+              <div className="h-4 w-16 bg-gray-200 rounded animate-pulse ml-auto" />
+            </td>
+            <td className="py-5 px-4">
+              <div className="h-4 w-20 bg-gray-200 rounded animate-pulse ml-auto" />
+            </td>
+          </tr>
+        ))
+      : city.map((city, index) => (
+          <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
+            <td className="py-4 px-4 text-sm text-gray-600">#{city.ranking}</td>
+            <td className="py-4 px-4">
+              <div className="flex items-center gap-3">
+                <span className="font-medium text-gray-900">{city.city}</span>
+              </div>
+            </td>
+            <td className="py-4 px-4 text-right text-sm text-gray-900">
+              {city.ticketsSold}
+            </td>
+            <td className="py-4 px-4 text-right">
+              <span className="text-sm text-gray-900">${city.revenue}</span>
+            </td>
+          </tr>
+        ))}
 
-            {/* Filler rows */}
-            {city.length < 6 &&
-              Array.from({ length: 6 - city.length }).map((_, i) => (
-                <tr key={`empty-${i}`} className="border-b border-gray-100">
-                  <td className="py-4 px-4 text-sm text-gray-600">&nbsp;</td>
-
-                  <td className="py-4 px-4">
-                    <div className="flex items-center gap-3">
-                      <span className="font-medium text-gray-900 invisible">
-                        placeholder
-                      </span>
-                    </div>
-                  </td>
-
-                  <td className="py-4 px-4 text-right text-sm text-gray-900">
-                    &nbsp;
-                  </td>
-
-                  <td className="py-4 px-4 text-right">
-                    <span className="text-sm text-gray-900">&nbsp;</span>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
+    {/* Filler rows */}
+    {!loading &&
+      city.length < 6 &&
+      Array.from({ length: 6 - city.length }).map((_, i) => (
+        <tr key={`empty-${i}`} className="border-b border-gray-100">
+          <td className="py-4 px-4">&nbsp;</td>
+          <td className="py-4 px-4">
+            <span className="invisible">placeholder</span>
+          </td>
+          <td className="py-4 px-4">&nbsp;</td>
+          <td className="py-4 px-4">&nbsp;</td>
+        </tr>
+      ))}
+  </tbody>
+</table>
       </div>
       {paginationInfo && paginationInfo.totalPage > 1 && (
         <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
@@ -191,7 +195,7 @@ function CityRanking() {
             ${!paginationInfo.hasPrevPage ? "" : "hover:bg-gray-200"}
            text-gray-600 `}
             >
-              <ChevronLeft className="w-4 h-4"  />
+              <ChevronLeft className="w-4 h-4" />
             </button>
 
             {generateArray()?.map((numPage, index) => (
@@ -218,7 +222,7 @@ function CityRanking() {
             ${!paginationInfo.hasNextPage ? "" : "hover:bg-gray-200"}
             rounded-lg text-sm text-gray-600 `}
             >
-              <ChevronRight className="w-4 h-4"  />
+              <ChevronRight className="w-4 h-4" />
             </button>
           </div>
         </div>
