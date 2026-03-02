@@ -1,4 +1,4 @@
-import { Ticket } from "@/lib/generated/prisma/client";
+
 
 export interface City {
   id: string;
@@ -79,4 +79,20 @@ export interface apiResTicket {
 export interface apiResCards {
   eventData: EventForm[];
   ticketData: Tickets[]
+}
+
+export interface TopEvent {
+  id: string;
+  title: string;
+  location: string;
+  category: string;
+  city: string
+  date: string;
+  ticketsSold: number;
+  revenue: number;
+}
+
+export interface apiResTopEvents {
+  data: TopEvent[];
+  Pagination: PaginationInfo;
 }
