@@ -22,7 +22,7 @@ const SuccessModal = () => {
 
       {/* Subtitle */}
       <p className="text-sm mb-8" style={{ color: "#64748b" }}>
-        Your tickets have been booked. <br /> Check your email for confirmation.
+        Your tickets have been booked. <br /> Enjoy your time.
       </p>
 
       {/* Divider */}

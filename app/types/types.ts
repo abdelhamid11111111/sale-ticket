@@ -14,7 +14,7 @@ export interface EventForm {
   id: string;
   title: string;
   description: string;
-  image?: string;
+  image: string;
   location: string;
   category: Category;
   city: City;

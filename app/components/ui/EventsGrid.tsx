@@ -156,7 +156,7 @@ const EventsGrid = () => {
       </section>
 
       {/* Event Grid */}
-      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-5 gap-4">
         {loading ? (
           Array.from({ length: 8 }).map((_, index) => (
             <div
@@ -176,7 +176,7 @@ const EventsGrid = () => {
             </div>
           ))
         ) : events.length === 0 ? (
-          <div className="col-span-2 sm:col-span-2 lg:col-span-4 flex flex-col items-center justify-center py-24 px-6">
+          <div className="col-span-2 sm:col-span-5 lg:col-span-5 flex flex-col items-center justify-center py-24 px-6">
             <div className="w-20 h-20 rounded-2xl bg-slate-100 flex items-center justify-center mb-5">
               <span className="text-4xl">🎟️</span>
             </div>
@@ -200,11 +200,14 @@ const EventsGrid = () => {
             <React.Fragment key={index}>
               {/* {new Date(event.eventDate) < new Date() && ( */}
               <div className="bg-slate-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
-                <div className="relative h-48 w-full">
+                {/* Square-friendly image (perfect for square pics) */}
+                <div className="relative aspect-square w-full">
                   <div className="relative w-full h-full">
-                    <img
+                    <Image
                       src={event.image}
                       alt={event.title}
+                      width={600}
+                      height={100}
                       className="object-cover bg-gray-500 w-full h-full"
                     />
                     {new Date(event.eventDate) < new Date() && (
@@ -216,14 +219,16 @@ const EventsGrid = () => {
                     )}
                   </div>
                 </div>
-                <div className="p-5 space-y-3">
+
+                {/* More compact vertical layout */}
+                <div className="p-4 space-y-2">
+                  {/* Date + Time pill */}
                   <div className="flex items-center justify-between text-sm">
-                    {/* Date + Time together in one pill */}
                     <div className="flex items-center gap-2 bg-blue-100 text-blue-600 font-semibold px-3 py-1 rounded-md text-xs">
                       <span>
                         {new Date(event.eventDate).toLocaleDateString("en-US", {
                           year: "numeric",
-                          month: "short", // "Mar 7, 2026" instead of "March 7, 2026"
+                          month: "short",
                           day: "numeric",
                         })}
                       </span>
@@ -236,9 +241,11 @@ const EventsGrid = () => {
                       </span>
                     </div>
                   </div>
-                  <h3 className="text-lg font-bold text-slate-900 truncate">
+
+                  <h3 className="text-base font-bold text-slate-900 line-clamp-2">
                     {event.title}
                   </h3>
+
                   <div className="flex items-center gap-2 text-sm text-slate-500">
                     <FaLocationDot />
                     <span style={{ display: "flex", gap: "4px" }}>
@@ -246,15 +253,17 @@ const EventsGrid = () => {
                       <span>{event.city.name}</span>
                     </span>
                   </div>
+
                   <div className="border-t border-slate-200 pt-3 flex items-center justify-between">
                     <div>
                       <p className="text-xs text-slate-400 uppercase">Price</p>
                       <p className="text-lg font-bold text-slate-900">
-                        ${event.price}
+                        {" "}
+                        ${event.price}{" "}
                       </p>
                     </div>
                     <Link href={`/events/${event.title}`}>
-                      <button className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow hover:bg-primary transition-all">
+                      <button className="w-9 h-9 flex items-center justify-center bg-white rounded-full shadow hover:bg-primary transition-all">
                         <FaArrowRight className="text-gray-400 hover:text-gray-300" />
                       </button>
                     </Link>
