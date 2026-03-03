@@ -20,7 +20,6 @@ export default function SoldTicketsLog() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  
   const fetchTickets = async (
     page: number = 1,
     search: string,
@@ -157,7 +156,9 @@ export default function SoldTicketsLog() {
                       // update state
                       setFrom(value);
                       // keep url when user give from date
-                      const params = new URLSearchParams(searchParams.toString());
+                      const params = new URLSearchParams(
+                        searchParams.toString(),
+                      );
 
                       if (value) {
                         // put value in url
@@ -182,7 +183,9 @@ export default function SoldTicketsLog() {
                       // update state
                       setTo(value);
                       // keep url when user give to value
-                      const params = new URLSearchParams(searchParams.toString());
+                      const params = new URLSearchParams(
+                        searchParams.toString(),
+                      );
 
                       if (value) {
                         // put value in url
@@ -269,19 +272,45 @@ export default function SoldTicketsLog() {
                     ))}
 
                   {/* Empty */}
+                  {/* Empty */}
                   {!loading && tickets.length === 0 && (
                     <tr>
                       <td colSpan={6} className="px-6 py-20 text-center">
                         <div className="flex flex-col items-center gap-3">
                           <div className="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center">
-                            <span className="text-2xl">🎟️</span>
+                            {search || from || to ? (
+                              <CiSearch className="text-2xl text-slate-400" />
+                            ) : (
+                              <span className="text-2xl">🎟️</span>
+                            )}
                           </div>
                           <p className="text-sm font-semibold text-slate-700">
-                            No tickets yet
+                            {search || from || to
+                              ? "No results found"
+                              : "No tickets yet"}
                           </p>
                           <p className="text-xs text-slate-400">
-                            Tickets will appear here once orders come in
+                            {search && !from && !to
+                              ? `No tickets matched "${search}"`
+                              : !search && (from || to)
+                                ? "No tickets found in the selected date range"
+                                : search && (from || to)
+                                  ? `No tickets matched "${search}" in the selected date range`
+                                  : "Tickets will appear here once orders come in"}
                           </p>
+                          {(search || from || to) && (
+                            <button
+                              onClick={() => {
+                                setSearch("");
+                                setFrom("");
+                                setTo("");
+                                router.push(`/admin/orders?page=1`);
+                              }}
+                              className="mt-1 text-xs text-slate-500 border border-slate-200 px-3 py-1.5 rounded-lg hover:bg-slate-50 transition-colors"
+                            >
+                              Clear 
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>

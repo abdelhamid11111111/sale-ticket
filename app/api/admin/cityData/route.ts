@@ -99,7 +99,7 @@ export async function GET(req: NextRequest) {
         return {
           revenue,
           name: city.name,
-          totalRevenue: totalRevenue
+          totalRevenue: totalRevenue,
         };
       })
       .sort((a, b) => b.revenue - a.revenue);  //    <- sort by revenue

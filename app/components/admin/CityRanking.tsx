@@ -113,73 +113,120 @@ function CityRanking() {
       </div>
 
       <div className="min-h-[360px]">
-       <table className="w-full table-fixed">
-  <thead>
-    <tr className="border-b border-gray-200">
-      <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase w-16">
-        Rank
-      </th>
-      <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">
-        City Name
-      </th>
-      <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase w-32">
-        Tickets Sold
-      </th>
-      <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase w-36">
-        Gross Revenue
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-    {loading
-      ? Array.from({ length: 6 }).map((_, index) => (
-          <tr key={index} className="border-b border-gray-100">
-            <td className="py-5 px-4">
-              <div className="h-4 w-6 bg-gray-200 rounded animate-pulse" />
-            </td>
-            <td className="py-5 px-4">
-              <div className="h-4 w-3/4 bg-gray-200 rounded animate-pulse" />
-            </td>
-            <td className="py-5 px-4">
-              <div className="h-4 w-16 bg-gray-200 rounded animate-pulse ml-auto" />
-            </td>
-            <td className="py-5 px-4">
-              <div className="h-4 w-20 bg-gray-200 rounded animate-pulse ml-auto" />
-            </td>
-          </tr>
-        ))
-      : city.map((city, index) => (
-          <tr key={index} className="border-b border-gray-100 hover:bg-gray-50">
-            <td className="py-4 px-4 text-sm text-gray-600">#{city.ranking}</td>
-            <td className="py-4 px-4">
-              <div className="flex items-center gap-3">
-                <span className="font-medium text-gray-900">{city.city}</span>
-              </div>
-            </td>
-            <td className="py-4 px-4 text-right text-sm text-gray-900">
-              {city.ticketsSold}
-            </td>
-            <td className="py-4 px-4 text-right">
-              <span className="text-sm text-gray-900">${city.revenue}</span>
-            </td>
-          </tr>
-        ))}
+        <table className="w-full table-fixed">
+          <thead>
+            <tr className="border-b border-gray-200">
+              <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase w-16">
+                Rank
+              </th>
+              <th className="text-left py-3 px-4 text-xs font-semibold text-gray-500 uppercase">
+                City Name
+              </th>
+              <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase w-32">
+                Tickets Sold
+              </th>
+              <th className="text-right py-3 px-4 text-xs font-semibold text-gray-500 uppercase w-36">
+                Gross Revenue
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading
+              ? Array.from({ length: 6 }).map((_, index) => (
+                  <tr key={index} className="border-b border-gray-100">
+                    <td className="py-5 px-4">
+                      <div className="h-4 w-6 bg-gray-200 rounded animate-pulse" />
+                    </td>
+                    <td className="py-5 px-4">
+                      <div className="h-4 w-3/4 bg-gray-200 rounded animate-pulse" />
+                    </td>
+                    <td className="py-5 px-4">
+                      <div className="h-4 w-16 bg-gray-200 rounded animate-pulse ml-auto" />
+                    </td>
+                    <td className="py-5 px-4">
+                      <div className="h-4 w-20 bg-gray-200 rounded animate-pulse ml-auto" />
+                    </td>
+                  </tr>
+                ))
+              : city.map((city, index) => (
+                  <tr
+                    key={index}
+                    className="border-b border-gray-100 hover:bg-gray-50"
+                  >
+                    <td className="py-4 px-4 text-sm text-gray-600">
+                      #{city.ranking}
+                    </td>
+                    <td className="py-4 px-4">
+                      <div className="flex items-center gap-3">
+                        <span className="font-medium text-gray-900">
+                          {city.city}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="py-4 px-4 text-right text-sm text-gray-900">
+                      {city.ticketsSold}
+                    </td>
+                    <td className="py-4 px-4 text-right">
+                      <span className="text-sm text-gray-900">
+                        ${city.revenue}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
 
-    {/* Filler rows */}
-    {!loading &&
-      city.length < 6 &&
-      Array.from({ length: 6 - city.length }).map((_, i) => (
-        <tr key={`empty-${i}`} className="border-b border-gray-100">
-          <td className="py-4 px-4">&nbsp;</td>
-          <td className="py-4 px-4">
-            <span className="invisible">placeholder</span>
-          </td>
-          <td className="py-4 px-4">&nbsp;</td>
-          <td className="py-4 px-4">&nbsp;</td>
-        </tr>
-      ))}
-  </tbody>
-</table>
+            {/* Filler rows */}
+            {!loading && city.length === 0 ? (
+              <tr>
+                <td colSpan={4} className="h-[360px]">
+                  <div className="flex flex-col items-center justify-center h-full text-center">
+                    <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-3">
+                      <svg
+                        className="w-6 h-6 text-gray-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1.5}
+                          d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1.5}
+                          d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
+                        />
+                      </svg>
+                    </div>
+                    <p className="text-sm font-semibold text-gray-700">
+                      No cities found
+                    </p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      {search
+                        ? `No results for "${search}"`
+                        : "City sales data will appear here once available"}
+                    </p>
+                  </div>
+                </td>
+              </tr>
+            ) : (
+              !loading &&
+              city.length < 6 &&
+              Array.from({ length: 6 - city.length }).map((_, i) => (
+                <tr key={`empty-${i}`} className="border-b border-gray-100">
+                  <td className="py-4 px-4">&nbsp;</td>
+                  <td className="py-4 px-4">
+                    <span className="invisible">placeholder</span>
+                  </td>
+                  <td className="py-4 px-4">&nbsp;</td>
+                  <td className="py-4 px-4">&nbsp;</td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
       {paginationInfo && paginationInfo.totalPage > 1 && (
         <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">

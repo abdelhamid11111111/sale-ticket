@@ -367,16 +367,35 @@ export default function ManageEventsPage() {
                     No events found
                   </h3>
                   <p className="text-sm text-slate-400 text-center mb-6">
-                    {selectedCategory
-                      ? "No events match the selected category."
-                      : "You haven't created any events yet."}
+                    {search
+                      ? `No events matched "${search}". Try a different keyword.`
+                      : selectedCategory
+                        ? "No events match the selected category."
+                        : "You haven't created any events yet."}
                   </p>
-                  <Link href="/admin/events/create">
-                    <button className="flex items-center gap-2 bg-[#135bec] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#0e4bce] transition-colors">
-                      <IoAddOutline className="text-lg" />
-                      Create your first event
+                  {search ? (
+                    <button
+                      onClick={() => {
+                        setSearch("");
+                        const params = new URLSearchParams(
+                          searchParams.toString(),
+                        );
+                        params.delete("search");
+                        params.set("page", "1");
+                        router.push(`/admin/events?${params.toString()}`);
+                      }}
+                      className="flex items-center gap-2 border border-slate-200 text-slate-600 px-4 py-2 rounded-lg text-sm hover:bg-slate-50 transition-colors"
+                    >
+                      Clear search
                     </button>
-                  </Link>
+                  ) : (
+                    <Link href="/admin/events/create">
+                      <button className="flex items-center gap-2 bg-[#135bec] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#0e4bce] transition-colors">
+                        <IoAddOutline className="text-lg" />
+                        Create your first event
+                      </button>
+                    </Link>
+                  )}
                 </span>
               )}
               {/* Pagination */}

@@ -179,8 +179,10 @@ const EventsSales = () => {
                     <p className="text-sm font-semibold text-gray-700">
                       No events found
                     </p>
-                    <p className="text-xs text-gray-400">
-                      Try adjusting your search
+                    <p className="text-xs text-gray-400 mt-1">
+                      {search
+                        ? `No results for "${search}"`
+                        : "Event sales data will appear here once available"}
                     </p>
                   </div>
                 </td>
