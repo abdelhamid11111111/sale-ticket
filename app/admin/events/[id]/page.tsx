@@ -176,7 +176,7 @@ const UpdateEventForm = () => {
                   onChange={(e) => setForm({ ...form, title: e.target.value })}
                   required
                   placeholder="Enter event title"
-                  className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full text-black pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
             </div>
@@ -199,7 +199,7 @@ const UpdateEventForm = () => {
                 required
                 rows={4}
                 placeholder="Describe your event..."
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                className="w-full px-4 py-3 text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               />
             </div>
 
@@ -223,7 +223,7 @@ const UpdateEventForm = () => {
                       setForm({ ...form, cityId: String(e.target.value) })
                     }
                     required
-                    className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white cursor-pointer"
+                    className="w-full pl-11 text-black pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white cursor-pointer"
                   >
                     <option value="">Select a city</option>
                     {cities.map((city) => (
@@ -262,7 +262,7 @@ const UpdateEventForm = () => {
                       setForm({ ...form, categoryId: String(e.target.value) })
                     }
                     required
-                    className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white cursor-pointer"
+                    className="w-full pl-11 text-black pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white cursor-pointer"
                   >
                     <option value="">Select a category</option>
                     {categories.map((category) => (
@@ -304,7 +304,7 @@ const UpdateEventForm = () => {
                   }
                   required
                   placeholder="Enter venue address"
-                  className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-11 pr-4 py-3 text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
             </div>
@@ -330,7 +330,7 @@ const UpdateEventForm = () => {
                       setForm({ ...form, eventDate: e.target.value })
                     }
                     required
-                    className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full pl-11 pr-4 text-black py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
               </div>
@@ -357,7 +357,7 @@ const UpdateEventForm = () => {
                     step="0.01"
                     min="0"
                     placeholder="0.00"
-                    className="w-full pl-11 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full pl-11 pr-4 text-black py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
               </div>

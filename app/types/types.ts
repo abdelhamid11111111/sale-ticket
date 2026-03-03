@@ -121,3 +121,12 @@ export interface SortedCategory{
   name: string;
   revenue: number
 }
+
+export type SalesTrendDay = {
+  day: string;
+  sales: number;
+};
+
+export type ApiResSalesTrend = {
+  data: SalesTrendDay[];
+};
