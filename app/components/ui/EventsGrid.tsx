@@ -140,12 +140,12 @@ const EventsGrid = () => {
               <button
                 onClick={() => handleFilter(cat.id)}
                 key={cat.id}
-                className={`px-4 py-2 bg-slate-100 rounded-full text-sm font-medium hover:bg-primary
+                className={`px-4 py-2 bg-slate-100 rounded-full text-sm font-medium 
             transition-colors whitespace-nowrap shrink-0
             ${
               selectedCategory === cat.id
                 ? "bg-slate-100 text-slate-800"
-                : "text-neutral-200 bg-slate-800 "
+                : "text-neutral-200 bg-slate-800 hover:dark:bg-slate-700"
             }`}
               >
                 {cat.name}
