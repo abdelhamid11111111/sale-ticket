@@ -6,6 +6,7 @@ import { EventForm } from "../../types/types";
 import { FaArrowRight, FaLocationDot } from "react-icons/fa6";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import Image from "next/image";
 
 const SearchPage = () => {
   const [results, setResults] = useState<EventForm[]>([]);
@@ -45,12 +46,12 @@ const SearchPage = () => {
       </div>
 
       {/* Main Content */}
-      <div className="text-2xl font-bold text-slate-900 px-4 sm:px-6 mt-14 lg:px-8 max-w-7xl mx-auto">
+      <div className="text-2xl mb-7 font-bold text-slate-900 px-4 sm:px-6 mt-14 lg:px-8 max-w-7xl mx-auto">
         Results found for keyword, {query}
       </div>
-      <section className="px-4 sm:px-6 pt-5 lg:px-8 max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-5 gap-4">
         {loading ? (
-          Array.from({ length: 8 }).map((_, index) => (
+          Array.from({ length: 10 }).map((_, index) => (
             <div
               key={index}
               className="bg-slate-100 rounded-2xl overflow-hidden animate-pulse"
@@ -84,11 +85,14 @@ const SearchPage = () => {
             <React.Fragment key={index}>
               {/* {new Date(event.eventDate) < new Date() && ( */}
               <div className="bg-slate-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
-                <div className="relative h-48 w-full">
+                {/* Square-friendly image (perfect for square pics) */}
+                <div className="relative aspect-square w-full">
                   <div className="relative w-full h-full">
-                    <img
+                    <Image
                       src={event.image}
                       alt={event.title}
+                      width={600}
+                      height={100}
                       className="object-cover bg-gray-500 w-full h-full"
                     />
                     {new Date(event.eventDate) < new Date() && (
@@ -100,14 +104,16 @@ const SearchPage = () => {
                     )}
                   </div>
                 </div>
-                <div className="p-5 space-y-3">
+
+                {/* More compact vertical layout */}
+                <div className="p-4 space-y-2">
+                  {/* Date + Time pill */}
                   <div className="flex items-center justify-between text-sm">
-                    {/* Date + Time together in one pill */}
                     <div className="flex items-center gap-2 bg-blue-100 text-blue-600 font-semibold px-3 py-1 rounded-md text-xs">
                       <span>
                         {new Date(event.eventDate).toLocaleDateString("en-US", {
                           year: "numeric",
-                          month: "short", // "Mar 7, 2026" instead of "March 7, 2026"
+                          month: "short",
                           day: "numeric",
                         })}
                       </span>
@@ -120,25 +126,28 @@ const SearchPage = () => {
                       </span>
                     </div>
                   </div>
-                  <h3 className="text-lg font-bold text-slate-900 truncate">
+
+                  <h3 className="text-base font-bold text-slate-900 truncate">
                     {event.title}
                   </h3>
-                  <div className="flex items-center gap-2 text-sm text-slate-500">
-                    <FaLocationDot />
-                    <span style={{ display: "flex", gap: "4px" }}>
-                      <span>{event.location},</span>
-                      <span>{event.city.name}</span>
+
+                  <div className="flex items-center gap-1.5 text-sm text-slate-500 min-w-0">
+                    <FaLocationDot className="shrink-0" />
+                    <span className="truncate">
+                      {event.city.name}, {event.location}
                     </span>
                   </div>
+
                   <div className="border-t border-slate-200 pt-3 flex items-center justify-between">
                     <div>
                       <p className="text-xs text-slate-400 uppercase">Price</p>
                       <p className="text-lg font-bold text-slate-900">
-                        ${event.price}
+                        {" "}
+                        ${event.price}{" "}
                       </p>
                     </div>
                     <Link href={`/events/${event.title}`}>
-                      <button className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow hover:bg-primary transition-all">
+                      <button className="w-9 h-9 flex items-center justify-center bg-white rounded-full shadow hover:bg-primary transition-all">
                         <FaArrowRight className="text-gray-400 hover:text-gray-300" />
                       </button>
                     </Link>
