@@ -13,7 +13,7 @@ export async function GET() {
 
     return NextResponse.json(
       { eventData: eventData, ticketData: ticketData },
-      { status: 500 },
+      { status: 200 },
     );
   } catch (error) {
     console.error("Error ", error);
