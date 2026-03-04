@@ -145,7 +145,7 @@ const EventsGrid = () => {
             ${
               selectedCategory === cat.id
                 ? "bg-slate-100 text-slate-800"
-                : "text-neutral-200 bg-slate-800 hover:dark:bg-slate-700"
+                : "text-neutral-200 bg-slate-800 "
             }`}
               >
                 {cat.name}
