@@ -11,8 +11,7 @@ A full-stack event ticketing platform built with **Next.js**, **Prisma**, and **
 <img width="1883" height="818" alt="image" src="https://github.com/user-attachments/assets/7acb2fd4-6351-4d95-aa0d-a62aac3ffc2f" />
 
 ## ⚙️ Admin Dashboard
-<img width="451" height="698" alt="image" src="https://github.com/user-attachments/assets/d0605f09-d429-449e-874b-db89206c5c3f" />
-
+<img width="1910" height="2992" alt="screencapture-sale-ticket-vercel-app-admin-dashboard-2026-03-04-18_04_40" src="https://github.com/user-attachments/assets/115183f5-e9e0-4c0a-bee5-e55f7f10d112" />
 
 ## ✨ Features
 
