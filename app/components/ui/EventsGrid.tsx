@@ -158,7 +158,7 @@ const EventsGrid = () => {
       {/* Event Grid */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-5 gap-4">
         {loading ? (
-          Array.from({ length: 8 }).map((_, index) => (
+          Array.from({ length: 10 }).map((_, index) => (
             <div
               key={index}
               className="bg-slate-100 rounded-2xl overflow-hidden animate-pulse"
@@ -242,15 +242,15 @@ const EventsGrid = () => {
                     </div>
                   </div>
 
-                  <h3 className="text-base font-bold text-slate-900 line-clamp-2">
+                  <h3 className="text-base font-bold text-slate-900 truncate">
                     {event.title}
                   </h3>
 
-                  <div className="flex items-center gap-2 text-sm text-slate-500">
-                    <FaLocationDot />
-                      <span>{event.city.name},</span>
-                      {"    "}
-                      <span>{event.location}</span>
+                  <div className="flex items-center gap-1.5 text-sm text-slate-500 min-w-0">
+                    <FaLocationDot className="shrink-0" />
+                    <span className="truncate">
+                      {event.city.name}, {event.location}
+                    </span>
                   </div>
 
                   <div className="border-t border-slate-200 pt-3 flex items-center justify-between">

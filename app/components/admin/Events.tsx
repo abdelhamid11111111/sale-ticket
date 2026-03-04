@@ -281,7 +281,7 @@ export default function ManageEventsPage() {
                                     {event.title}
                                   </div>
                                   <div className="text-xs text-slate-500">
-                                    {event.location}
+                                     {event.city.name}
                                   </div>
                                 </div>
                               </div>
