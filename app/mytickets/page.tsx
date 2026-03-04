@@ -161,7 +161,7 @@ const MyTickets = () => {
                         style={{ color: "#64748b" }}
                       >
                         <FaLocationDot size={11} />
-                        <span className="truncate">{ticket.event.location}{'  -  '}{ticket.city.name}</span>
+                        <span className="truncate">{ticket.city.name}{'  -  '}{ticket.event.location}</span>
                       </div>
                     </div>
                   </div>
