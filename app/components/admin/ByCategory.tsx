@@ -61,11 +61,6 @@ const ByCategory = () => {
               ))}
             </div>
             {/* Loading Insight */}
-            <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 space-y-2">
-              <div className="h-3 w-full bg-blue-100 rounded animate-pulse" />
-              <div className="h-3 w-full bg-blue-100 rounded animate-pulse" />
-              <div className="h-3 w-3/4 bg-blue-100 rounded animate-pulse" />
-            </div>
           </>
         ) : categories.length === 0 ? (
           <>
@@ -91,12 +86,6 @@ const ByCategory = () => {
               </p>
               <p className="text-xs text-gray-400 mt-1">
                 Revenue breakdown will appear once ticket sales come in
-              </p>
-            </div>
-            {/* Dimmed Insight Placeholder */}
-            <div className="bg-gray-50 border border-gray-100 rounded-xl p-4">
-              <p className="text-sm text-gray-400 italic">
-                No insight available yet.
               </p>
             </div>
           </>
@@ -130,21 +119,35 @@ const ByCategory = () => {
                 );
               })}
             </div>
-            {/* Insight */}
-            <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
-              <p className="text-sm text-gray-700 leading-relaxed">
-                <span className="font-semibold text-gray-900">
-                  {categories[0]?.name}
-                </span>{" "}
-                contributes nearly{" "}
-                <span className="font-semibold text-blue-600">
-                  {((categories[0]?.revenue / totalRevenue) * 100).toFixed(1)}%
-                </span>{" "}
-                of total ticket sales. Consider launching targeted campaigns to
-                further capitalize on its strong performance.
-              </p>
-            </div>
           </>
+        )}
+
+        {isLoading ? (
+          <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 space-y-2">
+            <div className="h-3 w-full bg-blue-100 rounded animate-pulse" />
+            <div className="h-3 w-full bg-blue-100 rounded animate-pulse" />
+            <div className="h-3 w-3/4 bg-blue-100 rounded animate-pulse" />
+          </div>
+        ) : totalRevenue === 0 || categories.length === 0 ? (
+          <div className="bg-gray-50 border border-gray-100 rounded-xl p-4">
+            <p className="text-sm text-gray-400 italic">
+              No insight available yet.
+            </p>
+          </div>
+        ) : (
+          <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
+            <p className="text-sm text-gray-700 leading-relaxed">
+              <span className="font-semibold text-gray-900">
+                {categories[0]?.name}
+              </span>{" "}
+              contributes nearly{" "}
+              <span className="font-semibold text-blue-600">
+                {((categories[0]?.revenue / totalRevenue) * 100).toFixed(1)}%
+              </span>{" "}
+              of total ticket sales. Consider launching targeted campaigns to
+              further capitalize on its strong performance.
+            </p>
+          </div>
         )}
       </div>
     </div>

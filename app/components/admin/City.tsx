@@ -70,7 +70,7 @@ const City = () => {
                 </div>
               ))}
             </div>
-          ) : cities.length === 0 ? (
+          ) :  cities.length === 0 || percentage === 0  ? (
             <div className="flex flex-col my-13 items-center justify-center py-10 text-center">
               <div className="w-12 h-12 my-20 rounded-full bg-gray-100 flex items-center justify-center mb-3">
                 <svg
@@ -103,14 +103,14 @@ const City = () => {
                       {item.name}
                     </span>
                     <span className="text-sm font-bold text-gray-900">
-                      {((item.revenue / item.totalRevenue) * 100).toFixed(1)}%
+                      {item.totalRevenue > 0 ? ((item.revenue / item.totalRevenue) * 100).toFixed(1) : '0.0'}%
                     </span>
                   </div>
                   <div className="w-full bg-gray-100 rounded-full h-2">
                     <div
                       className="h-2 rounded-full"
                       style={{
-                        width: `${(item.revenue / item.totalRevenue) * 100}%`,
+                        width: `${item.totalRevenue > 0 ? ((item.revenue / item.totalRevenue) * 100).toFixed(1) : '0.0'}%`,
                         backgroundColor: "#3B82F6",
                       }}
                     />
@@ -133,7 +133,7 @@ const City = () => {
                   <div className="h-4 w-full bg-gray-200 rounded animate-pulse" />
                   <div className="h-4 w-3/4 bg-gray-200 rounded animate-pulse" />
                 </div>
-              ) : cities.length === 0 ? (
+              ) : cities.length === 0 || percentage === 0  ? (
                 <p className="text-sm text-gray-400 italic">
                   No insight available — check back once sales data is recorded.
                 </p>
@@ -142,7 +142,7 @@ const City = () => {
                   <span className="font-semibold text-gray-900">
                     {cities[0]?.name}
                   </span>{" "}
-                  accounts for nearly {percentage.toFixed(1)}% of all ticket
+                  accounts for nearly {percentage > 0 ? percentage.toFixed(1) : '0.0'}% of all ticket
                   sales of all time. Consider targeted campaigns in this region.
                 </p>
               )}
