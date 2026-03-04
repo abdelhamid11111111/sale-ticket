@@ -1,20 +1,17 @@
 "use client";
-export const dynamic = 'force-dynamic'
+export const dynamic = "force-dynamic";
 import Sidebar from "@/app/components/admin/Sidebar";
 import Cards from "@/app/components/admin/Cards";
 import City from "@/app/components/admin/City";
 import EventsSales from "@/app/components/admin/EventsSales";
-// import Graph from "@/app/components/admin/Graph";
+
 import { Suspense } from "react";
 import ByCategory from "@/app/components/admin/ByCategory";
-
-
+import { ChartAreaLegend } from "@/app/components/admin/Chart";
 
 const Dashboard = () => {
-
   return (
     <div className="min-h-screen bg-[#f6f6f8]">
-
       {/* Sidebar */}
       <div className="w-64 shrink-0 fixed h-screen">
         <Sidebar />
@@ -22,7 +19,6 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <div className="ml-64 p-8">
-
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
@@ -37,24 +33,31 @@ const Dashboard = () => {
         <Cards />
 
         <div className="grid grid-cols-3 gap-6 mb-8">
-            
-          {/* LEFT COLUMN - Graph */}
+          {/* LEFT COLUMN - Chart (70%) */}
           <div className="col-span-2">
-            {/* <Graph /> */}
+            <ChartAreaLegend />
           </div>
 
-          {/* RIGHT COLUMN - Revenue by Category */}
-          <ByCategory/>
-
+          {/* RIGHT COLUMN - By Category (30%) */}
+          <div className="col-span-1">
+            <ByCategory />
+          </div>
         </div>
 
-         <Suspense fallback={<div className="h-96 animate-pulse bg-slate-100 rounded-xl" />}>
+        <Suspense
+          fallback={
+            <div className="h-96 animate-pulse bg-slate-100 rounded-xl" />
+          }
+        >
           <City />
         </Suspense>
-        <Suspense fallback={<div className="h-96 animate-pulse bg-slate-100 rounded-xl mt-6" />}>
+        <Suspense
+          fallback={
+            <div className="h-96 animate-pulse bg-slate-100 rounded-xl mt-6" />
+          }
+        >
           <EventsSales />
         </Suspense>
-
       </div>
     </div>
   );

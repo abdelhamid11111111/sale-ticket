@@ -29,7 +29,7 @@ const ByCategory = () => {
   }, []);
 
   return (
-    <div className="col-span-1">
+    <div className="">
       <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-6">
         {/* Header */}
         <div>
