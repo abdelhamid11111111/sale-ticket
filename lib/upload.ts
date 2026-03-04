@@ -1,35 +1,28 @@
-import { writeFile } from "fs/promises";
-import { join } from "path";
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 export async function saveFile(file: File): Promise<string> {
-    
-    // 1. get file as binary 
-    const binary = await file.arrayBuffer()
+  const binary = await file.arrayBuffer();
+  const buffer = Buffer.from(binary);
+  const timestamp = Date.now();
+  const filename = `${timestamp}-${file.name}`;
 
-    // 2. turn it into node js friendly
-    const buffer = Buffer.from(binary)
+  const { data, error } = await supabase.storage
+    .from('events')
+    .upload(filename, buffer, {
+      contentType: file.type,
+      upsert: false,
+    });
 
-    // 3. generate name for file
-    const timestamp = Date.now()
-    const filename  = `${timestamp}-${file.name}`
+  if (error) throw new Error(error.message);
 
-    // 4. create path
-    const path = join(process.cwd(), `/public/uploads`, filename)
+  const { data: publicUrl } = supabase.storage
+    .from('events')
+    .getPublicUrl(data.path);
 
-    // 5. save file
-    await writeFile(path, buffer)
-
-    // 6. return file
-    return `/uploads/${filename}`
-
+  return publicUrl.publicUrl; // returns full https:// URL
 }
-
-// .arrayBuffer() its read file from binary data from browser
-
-// Buffer is node js binary type, that's why its friendly
-
-// join combine path parts like: join("a", "b", "c") -> a\b\c 
-
-// process.cwd() its like pwd in CLI, means 'Current Working Directory'
-
-// it return only /uploads/photo.jpg, and not full path, cuz browser cant access 
