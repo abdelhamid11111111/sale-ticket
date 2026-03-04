@@ -11,6 +11,7 @@ import { Tickets } from "../types/types";
 
 const MyTickets = () => {
   const [tickets, setTickets] = useState<Tickets[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const fetchTickets = async (sessionId: string) => {
     try {
@@ -20,13 +21,18 @@ const MyTickets = () => {
       setTickets(data);
     } catch (error) {
       console.error("Error ", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     const load = () => {
       const sessionId = localStorage.getItem("sessionId");
-      if (!sessionId) return;
+      if (!sessionId) {
+        setLoading(false);
+        return;
+      }
       fetchTickets(sessionId);
     };
     load();
@@ -57,141 +63,180 @@ const MyTickets = () => {
           </p>
         </div>
 
-        {/* Tickets List */}
-        <div className="space-y-4">
-          {tickets.map((ticket) => (
-            <div
-              key={ticket.id}
-              className="rounded-2xl overflow-hidden border"
-              style={{
-                background: "#ffffff",
-                borderColor: "#f1f5f9",
-                boxShadow: "0 4px 20px -4px rgba(0,0,0,0.06)",
-              }}
-            >
-              <div className="p-5">
-                <div className="flex gap-4">
-                  {/* Image */}
-                  <img
-                    src={ticket.event.image}
-                    alt={ticket.event.title}
-                    className="w-20 h-20 rounded-xl object-cover shrink-0"
-                  />
-
-                  {/* Info */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2 mb-1">
-                      <h3
-                        className="font-bold text-base leading-tight truncate"
-                        style={{ color: "#0f172a" }}
-                      >
-                        {ticket.event.title}
-                      </h3>
+        {/* Loading Skeleton */}
+        {loading && (
+          <div className="space-y-4">
+            {[...Array(3)].map((_, i) => (
+              <div
+                key={i}
+                className="rounded-2xl overflow-hidden border animate-pulse"
+                style={{ background: "#ffffff", borderColor: "#f1f5f9", boxShadow: "0 4px 20px -4px rgba(0,0,0,0.06)" }}
+              >
+                <div className="p-5">
+                  <div className="flex gap-4">
+                    {/* Image skeleton */}
+                    <div className="w-20 h-20 rounded-xl bg-slate-200 shrink-0" />
+                    {/* Info skeleton */}
+                    <div className="flex-1 min-w-0 space-y-2 pt-1">
+                      <div className="h-4 w-3/4 bg-slate-200 rounded-md" />
+                      <div className="h-3 w-1/2 bg-slate-200 rounded-md" />
+                      <div className="h-3 w-2/5 bg-slate-200 rounded-md" />
                     </div>
-                    <div
-                      className="flex items-center gap-1 text-xs mb-1"
-                      style={{ color: "#64748b" }}
-                    >
-                      <FaCalendarAlt size={11} />
-                      <span>
-                        {new Date(ticket.event.eventDate).toLocaleDateString(
-                          "en-US",
-                          {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          },
-                        )}
-                        {"  -   "}
-                        {new Date(ticket.event.eventDate).toLocaleTimeString(
-                          "en-US",
-                          {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          },
-                        )}
-                      </span>
-                    </div>
-                    <div
-                      className="flex items-center gap-1 text-xs"
-                      style={{ color: "#64748b" }}
-                    >
-                      <FaLocationDot size={11} />
-                      <span className="truncate">{ticket.event.location}{'  -  '}{ticket.city.name}</span>
-                    </div>
+                  </div>
+                  {/* Divider */}
+                  <div className="my-4 border-t border-dashed" style={{ borderColor: "#e2e8f0" }} />
+                  {/* Bottom row skeleton */}
+                  <div className="flex items-center gap-6 flex-wrap">
+                    {[...Array(4)].map((_, j) => (
+                      <div key={j} className="space-y-1.5">
+                        <div className="h-2.5 w-12 bg-slate-200 rounded" />
+                        <div className="h-3.5 w-16 bg-slate-200 rounded" />
+                      </div>
+                    ))}
                   </div>
                 </div>
+              </div>
+            ))}
+          </div>
+        )}
 
-                {/* Divider dashed */}
-                <div
-                  className="my-4 border-t border-dashed"
-                  style={{ borderColor: "#e2e8f0" }}
-                />
+        {/* Tickets List */}
+        {!loading && (
+          <div className="space-y-4">
+            {tickets.map((ticket) => (
+              <div
+                key={ticket.id}
+                className="rounded-2xl overflow-hidden border"
+                style={{
+                  background: "#ffffff",
+                  borderColor: "#f1f5f9",
+                  boxShadow: "0 4px 20px -4px rgba(0,0,0,0.06)",
+                }}
+              >
+                <div className="p-5">
+                  <div className="flex gap-4">
+                    {/* Image */}
+                    <img
+                      src={ticket.event.image}
+                      alt={ticket.event.title}
+                      className="w-20 h-20 rounded-xl object-cover shrink-0"
+                    />
 
-                {/* Bottom row */}
-                <div className="flex items-center gap-4 flex-wrap">
-                  <div>
-                    <p className="text-xs" style={{ color: "#94a3b8" }}>
-                      Quantity
-                    </p>
-                    <p
-                      className="text-sm font-bold"
-                      style={{ color: "#0f172a" }}
-                    >
-                      {ticket.quantity} Tickets
-                    </p>
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2 mb-1">
+                        <h3
+                          className="font-bold text-base leading-tight truncate"
+                          style={{ color: "#0f172a" }}
+                        >
+                          {ticket.event.title}
+                        </h3>
+                      </div>
+                      <div
+                        className="flex items-center gap-1 text-xs mb-1"
+                        style={{ color: "#64748b" }}
+                      >
+                        <FaCalendarAlt size={11} />
+                        <span>
+                          {new Date(ticket.event.eventDate).toLocaleDateString(
+                            "en-US",
+                            {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            },
+                          )}
+                          {"  -   "}
+                          {new Date(ticket.event.eventDate).toLocaleTimeString(
+                            "en-US",
+                            {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            },
+                          )}
+                        </span>
+                      </div>
+                      <div
+                        className="flex items-center gap-1 text-xs"
+                        style={{ color: "#64748b" }}
+                      >
+                        <FaLocationDot size={11} />
+                        <span className="truncate">{ticket.event.location}{'  -  '}{ticket.city.name}</span>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-xs" style={{ color: "#94a3b8" }}>
-                      Total Price
-                    </p>
-                    <p
-                      className="text-sm font-bold"
-                      style={{ color: "#135bec" }}
-                    >
-                      ${ticket.totalPrice}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-xs" style={{ color: "#94a3b8" }}>
-                      Order ID
-                    </p>
-                    <div className="flex items-center gap-1">
-                      <MdConfirmationNumber
-                        size={12}
-                        style={{ color: "#135bec" }}
-                      />
+
+                  {/* Divider dashed */}
+                  <div
+                    className="my-4 border-t border-dashed"
+                    style={{ borderColor: "#e2e8f0" }}
+                  />
+
+                  {/* Bottom row */}
+                  <div className="flex items-center gap-4 flex-wrap">
+                    <div>
+                      <p className="text-xs" style={{ color: "#94a3b8" }}>
+                        Quantity
+                      </p>
                       <p
                         className="text-sm font-bold"
                         style={{ color: "#0f172a" }}
                       >
-                        {ticket.id}
+                        {ticket.quantity} Tickets
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs" style={{ color: "#94a3b8" }}>
+                        Total Price
+                      </p>
+                      <p
+                        className="text-sm font-bold"
+                        style={{ color: "#135bec" }}
+                      >
+                        ${ticket.totalPrice}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs" style={{ color: "#94a3b8" }}>
+                        Order ID
+                      </p>
+                      <div className="flex items-center gap-1">
+                        <MdConfirmationNumber
+                          size={12}
+                          style={{ color: "#135bec" }}
+                        />
+                        <p
+                          className="text-sm font-bold"
+                          style={{ color: "#0f172a" }}
+                        >
+                          {ticket.id}
+                        </p>
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-xs" style={{ color: "#94a3b8" }}>
+                        Purchased
+                      </p>
+                      <p
+                        className="text-sm font-bold"
+                        style={{ color: "#0f172a" }}
+                      >
+                        {new Date(ticket.createdAt).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
                       </p>
                     </div>
                   </div>
-                  <div>
-                    <p className="text-xs" style={{ color: "#94a3b8" }}>
-                      Purchased
-                    </p>
-                    <p
-                      className="text-sm font-bold"
-                      style={{ color: "#0f172a" }}
-                    >
-                      {new Date(ticket.createdAt).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </p>
-                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {/* Empty state */}
-        {tickets.length === 0 && (
+        {!loading && tickets.length === 0 && (
           <div className="flex flex-col items-center justify-center py-24">
             <div
               className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4"
