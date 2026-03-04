@@ -1,5 +1,4 @@
 import "./globals.css";
-import { ThemeProvider } from "next-themes";
 
 export const metadata = {
   title: "TicketFlow",
@@ -28,9 +27,9 @@ export default function RootLayout({
         />
       </head>
       <body className="font-plus-jakarta overflow-x-hidden w-full antialiased bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-100 transition-colors duration-300">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        {/* <ThemeProvider attribute="class" defaultTheme="system" enableSystem> */}
         {children}
-        </ThemeProvider>
+        {/* </ThemeProvider> */}
       </body>
     </html>
   );

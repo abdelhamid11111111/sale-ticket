@@ -3,6 +3,7 @@ import Navbar from "../components/ui/Navbar";
 import HeroSection from "../components/ui/HeroSection";
 import EventsGrid from "../components/ui/EventsGrid";
 import Footer from "../components/ui/Footer";
+import { Suspense } from "react";
 
 
 
@@ -19,7 +20,9 @@ const HomePage = () => {
         <HeroSection />
 
         {/* Events with filter and pagination */}
-        <EventsGrid/>
+        <Suspense fallback={<div className="h-96 animate-pulse bg-slate-100 rounded-xl mx-8" />}>
+          <EventsGrid />
+        </Suspense>
 
         {/* Footer */}
         <Footer/>

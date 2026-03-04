@@ -44,7 +44,7 @@ const ByCategory = () => {
         {isLoading ? (
           <>
             {/* Loading Categories */}
-            <div className="space-y-5 h-[375px]">
+            <div className="space-y-5 h-[355px]">
               {[...Array(6)].map((_, i) => (
                 <div key={i} className="space-y-2 my-7 ">
                   <div className="flex justify-between items-center">
@@ -70,7 +70,7 @@ const ByCategory = () => {
         ) : categories.length === 0 ? (
           <>
             {/* Empty State */}
-            <div className="flex flex-col h-[415px] items-center justify-center py-10 text-center">
+            <div className="flex flex-col h-[390px] items-center justify-center py-10 text-center">
               <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-3">
                 <svg
                   className="w-6 h-6 text-gray-400"

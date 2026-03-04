@@ -21,15 +21,7 @@ export default function Navbar({ query }: PropType) {
     router.push(`/search?query=${encoded}`);
   };
 
-  const { theme, setTheme } = useTheme();
-const [mounted, setMounted] = useState(false);
 
-useEffect(() => {
-const load = () => {
-setMounted(true)
-}
-load()
-}, [])
   
 
   return (
@@ -55,7 +47,7 @@ load()
               />
               <button
                 onClick={handleSearch}
-                className="bg-primary text-white px-5 py-2 dark:bg-slate-800 rounded-full text-sm font-semibold hover:opacity-90 active:scale-95 transition-all"
+                className="bg-primary text-white px-5 py-2 bg-slate-800 rounded-full text-sm font-semibold hover:opacity-90 active:scale-95 transition-all"
               >
                 Search
               </button>
@@ -65,20 +57,11 @@ load()
           {/* Desktop Links */}
           <div className="hidden md:flex items-center space-x-6">
             <Link
-              className="text-white bg-primary dark:bg-slate-800 hover:bg-slate-600 rounded-full px-5 py-2 text-sm font-medium transition-all"
+              className="text-white bg-primary bg-slate-800 hover:bg-slate-600 rounded-full px-5 py-2 text-sm font-medium transition-all"
               href="/mytickets"
             >
               MyTickets
             </Link>
-<button
-  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-  className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition"
->
-  {mounted && (theme === "dark"
-    ? <Sun className="w-5 h-5 text-yellow-400" />
-    : <Moon className="w-5 h-5 text-slate-600" />
-  )}
-</button>
           </div>
           {/* Mobile Hamburger */}
           <button

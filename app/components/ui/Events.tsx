@@ -1,16 +1,15 @@
 "use client";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa6";
 import { FaLocationDot } from "react-icons/fa6";
 import Link from "next/link";
+import Footer from "./Footer";
+import Navbar from "./Navbar";
+import { EventForm, Category, PaginationInfo, apiRes } from "../../types/types";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Category, EventForm, apiRes, PaginationInfo } from "../../types/types";
 
-const EventsGrid = () => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
+const Events = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [events, setEvents] = useState<EventForm[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -19,8 +18,9 @@ const EventsGrid = () => {
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo | null>(
     null,
   );
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  // fetch categories
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -36,19 +36,16 @@ const EventsGrid = () => {
 
   const handleFilter = async (categoryId: string) => {
     const params = new URLSearchParams();
-
     params.set("page", "1");
-
     params.set("categoryId", categoryId);
-
-    router.push(`/?${params.toString()}`, { scroll: false });
+    router.push(`/events?${params.toString()}`);
   };
 
   const fetchEvents = async (page: number = 1, categoryId: string) => {
     setLoading(true);
     try {
       const res = await fetch(
-        `/api/usrUI/homepage?page=${page}&categoryId=${categoryId}`,
+        `/api/usrUI/events?page=${page}&categoryId=${categoryId}`,
       );
       const data: apiRes = await res.json();
       setEvents(data.data);
@@ -61,13 +58,12 @@ const EventsGrid = () => {
   };
 
   useEffect(() => {
-    const pageFromUrl = Number(searchParams.get("page") || 1);
-    const categoryFromUrl = searchParams.get("categoryId") || "";
+    const pageFromUrl = Number(searchParams.get("page") || "1");
+    const categoryIdFromUrl = searchParams.get("categoryId") || "";
     const load = async () => {
       setCurrentPage(pageFromUrl);
-      setSelectedCategory(categoryFromUrl);
-
-      fetchEvents(pageFromUrl, categoryFromUrl);
+      setSelectedCategory(categoryIdFromUrl);
+      fetchEvents(pageFromUrl, categoryIdFromUrl);
     };
     load();
   }, [searchParams]);
@@ -75,14 +71,13 @@ const EventsGrid = () => {
   const goToPage = (page: number) => {
     if (page >= 1 && paginationInfo && paginationInfo.totalPage >= page) {
       const params = new URLSearchParams(searchParams.toString());
-      params.set("page", page.toString());
-
-      router.push(`/?${params.toString()}`, { scroll: false });
+      params.set("page", String(page));
+      router.push(`/events?${params.toString()}`, { scroll: false });
     }
   };
 
-  const generateEventsPagination = () => {
-    if (!paginationInfo) return [];
+  const generatePagination = () => {
+    if (!paginationInfo) return;
     const { currentPage, totalPage } = paginationInfo;
     const generateArray: (string | number)[] = [];
 
@@ -112,30 +107,23 @@ const EventsGrid = () => {
 
   return (
     <div>
+      {/* Navbar */}
+      <Navbar query="" />
       {/* Filter Bar */}
       <div className="flex items-center justify-between pt-10 pb-6 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         {/* Left side */}
         <div>
           <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
-            Explore Events
+            Explore All Events
           </h2>
           <div className="mt-2 h-1 w-16 bg-primary rounded-full"></div>
         </div>
-
-        {/* Right side */}
-        <Link
-          href="/events"
-          className="text-sm font-semibold text-primary text-blue-500 hover:text-blue-300 transition-colors flex items-center gap-1"
-        >
-          View all events
-          <FaArrowRight />
-        </Link>
       </div>
 
       {/* Categories - Horizontal Scroll */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-6">
         <div className="overflow-x-auto scrollbar-hide">
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide px-4 w-full">
+          <div className="flex gap-4 w-max">
             {categories.map((cat) => (
               <button
                 onClick={() => handleFilter(cat.id)}
@@ -145,7 +133,7 @@ const EventsGrid = () => {
             ${
               selectedCategory === cat.id
                 ? "bg-slate-100 text-slate-800"
-                : "text-neutral-200 bg-slate-800 hover:dark:bg-slate-700"
+                : "text-neutral-200 bg-slate-800 hover:dark:bg-slate-700 "
             }`}
               >
                 {cat.name}
@@ -198,33 +186,27 @@ const EventsGrid = () => {
         ) : (
           events.map((event, index) => (
             <React.Fragment key={index}>
-              {/* {new Date(event.eventDate) < new Date() && ( */}
-              <div className="bg-slate-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
-                {/* Square-friendly image (perfect for square pics) */}
-                <div className="relative aspect-square w-full">
-                  <div className="relative w-full h-full">
-                    <Image
-                      src={event.image}
-                      alt={event.title}
-                      width={600}
-                      height={100}
-                      className="object-cover bg-gray-500 w-full h-full"
-                    />
-                    {new Date(event.eventDate) < new Date() && (
-                      <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
-                        <span className="text-white text-2xl font-bold tracking-widest">
-                          SOLD OUT
-                        </span>
-                      </div>
-                    )}
-                  </div>
+              {/* Removed max-w-xs mx-auto — let the card fill its grid cell */}
+              <div className="bg-slate-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 w-full">
+                <div className="relative w-full aspect-square">
+                  <Image
+                    src={event.image}
+                    alt={event.title}
+                    width={600}
+                    height={100}
+                    className="object-cover bg-gray-500 w-full h-full"
+                  />
+                  {new Date(event.eventDate) < new Date() && (
+                    <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
+                      <span className="text-white text-xl font-bold tracking-widest">
+                        SOLD OUT
+                      </span>
+                    </div>
+                  )}
                 </div>
-
-                {/* More compact vertical layout */}
-                <div className="p-4 space-y-2">
-                  {/* Date + Time pill */}
+                <div className="p-3 space-y-1.5">
                   <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-2 bg-blue-100 text-blue-600 font-semibold px-3 py-1 rounded-md text-xs">
+                    <div className="bg-blue-100 text-blue-600 font-semibold px-3 py-1 rounded-md text-xs flex items-center gap-1.5">
                       <span>
                         {new Date(event.eventDate).toLocaleDateString("en-US", {
                           year: "numeric",
@@ -241,69 +223,66 @@ const EventsGrid = () => {
                       </span>
                     </div>
                   </div>
-
-                  <h3 className="text-base font-bold text-slate-900 line-clamp-2">
+                  <h3 className="text-sm font-bold text-slate-900 line-clamp-2 leading-tight">
                     {event.title}
                   </h3>
-
-                  <div className="flex items-center gap-2 text-sm text-slate-500">
-                    <FaLocationDot />
-                    <span style={{ display: "flex", gap: "4px" }}>
-                      <span>{event.location},</span>
-                      <span>{event.city.name}</span>
+                  <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                    <FaLocationDot className="flex-shrink-0" />
+                    <span className="truncate">
+                      {event.location}, {event.city.name}
                     </span>
                   </div>
-
-                  <div className="border-t border-slate-200 pt-3 flex items-center justify-between">
+                  <div className="border-t border-slate-200 pt-2 flex items-center justify-between">
                     <div>
-                      <p className="text-xs text-slate-400 uppercase">Price</p>
-                      <p className="text-lg font-bold text-slate-900">
-                        {" "}
-                        ${event.price}{" "}
+                      <p className="text-[10px] text-slate-400 uppercase tracking-widest">
+                        Price
+                      </p>
+                      <p className="text-base font-bold text-slate-900">
+                        ${event.price}
                       </p>
                     </div>
                     <Link href={`/events/${event.title}`}>
-                      <button className="w-9 h-9 flex items-center justify-center bg-white rounded-full shadow hover:bg-primary transition-all">
-                        <FaArrowRight className="text-gray-400 hover:text-gray-300" />
+                      <button className="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow hover:bg-primary transition-all">
+                        <FaArrowRight className="text-gray-400 hover:text-gray-300 text-sm" />
                       </button>
                     </Link>
                   </div>
                 </div>
               </div>
-              {/* )} */}
             </React.Fragment>
           ))
         )}
       </section>
 
       {/* Pagination */}
-      {paginationInfo && paginationInfo?.totalPage > 1 && (
+      {paginationInfo && paginationInfo.totalPage > 1 && (
         <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mt-12 mb-16 flex justify-center">
           <div className="flex items-center gap-2">
             {/* Previous */}
             <button
               onClick={() => goToPage(currentPage - 1)}
-              disabled={paginationInfo?.hasPrevPage === false}
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 transition disabled:opacity-40"
+              disabled={!paginationInfo.hasPrevPage}
+              className={`w-10 h-10 flex items-center justify-center rounded-full
+               bg-slate-100  ${!paginationInfo.hasPrevPage ? "" : "hover:bg-slate-200 transition"}`}
             >
               <FaArrowLeft className="text-slate-600 text-sm" />
             </button>
 
             {/* Page Numbers */}
-            {generateEventsPagination()?.map((pageNum, index) => (
+            {generatePagination()?.map((numPage, index) => (
               <React.Fragment key={index}>
-                {pageNum === "..." ? (
+                {numPage === "..." ? (
                   <span className="px-2 text-slate-400">•••</span>
                 ) : (
                   <button
-                    onClick={() => goToPage(pageNum as number)}
+                    onClick={() => goToPage(numPage as number)}
                     className={`w-10 h-10 rounded-full font-semibold transition ${
-                      currentPage === pageNum
+                      currentPage === numPage
                         ? "bg-gray-800 text-white"
                         : "bg-slate-100 text-gray-800 hover:bg-slate-200"
                     }`}
                   >
-                    {pageNum}
+                    {numPage}
                   </button>
                 )}
               </React.Fragment>
@@ -312,16 +291,20 @@ const EventsGrid = () => {
             {/* Next */}
             <button
               onClick={() => goToPage(currentPage + 1)}
-              disabled={paginationInfo?.hasNextPage === false}
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 transition disabled:opacity-40"
+              disabled={!paginationInfo.hasNextPage}
+              className={`w-10 h-10 flex items-center justify-center rounded-full
+               bg-slate-100  ${!paginationInfo.hasNextPage ? "" : "hover:bg-slate-200 transition"}`}
             >
               <FaArrowRight className="text-slate-600 text-sm" />
             </button>
           </div>
         </div>
       )}
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };
 
-export default EventsGrid;
+export default Events;

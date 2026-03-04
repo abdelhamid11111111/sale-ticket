@@ -1,9 +1,11 @@
 "use client";
+export const dynamic = 'force-dynamic'
 import Sidebar from "@/app/components/admin/Sidebar";
 import Cards from "@/app/components/admin/Cards";
 import City from "@/app/components/admin/City";
 import EventsSales from "@/app/components/admin/EventsSales";
-import Graph from "@/app/components/admin/Graph";
+// import Graph from "@/app/components/admin/Graph";
+import { Suspense } from "react";
 import ByCategory from "@/app/components/admin/ByCategory";
 
 
@@ -38,7 +40,7 @@ const Dashboard = () => {
             
           {/* LEFT COLUMN - Graph */}
           <div className="col-span-2">
-            <Graph />
+            {/* <Graph /> */}
           </div>
 
           {/* RIGHT COLUMN - Revenue by Category */}
@@ -46,11 +48,12 @@ const Dashboard = () => {
 
         </div>
 
-        {/* City Sales Distribution */}
-        <City />
-
-        {/* Event Sales */}
-        <EventsSales />
+         <Suspense fallback={<div className="h-96 animate-pulse bg-slate-100 rounded-xl" />}>
+          <City />
+        </Suspense>
+        <Suspense fallback={<div className="h-96 animate-pulse bg-slate-100 rounded-xl mt-6" />}>
+          <EventsSales />
+        </Suspense>
 
       </div>
     </div>
