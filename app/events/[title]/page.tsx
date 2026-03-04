@@ -103,8 +103,8 @@ const ProductPage = () => {
                       </p>
                       <p className="font-bold text-slate-900">
                         <span style={{ display: "flex", gap: "4px" }}>
-                          <span>{event.location},</span>
-                          <span>{event.city.name}</span>
+                          <span>{event.city.name},</span>
+                          <span>{event.location}</span>
                         </span>
                       </p>
                     </div>
