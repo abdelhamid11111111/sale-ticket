@@ -209,7 +209,7 @@ const EventsSales = () => {
                             {event.title}
                           </div>
                           <div className="text-sm text-gray-500">
-                            {event.location}, &nbsp;{event.city}
+                            {event.city}, &nbsp;{event.location}
                           </div>
                         </div>
                       </div>
