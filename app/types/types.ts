@@ -13,6 +13,7 @@ export interface Category {
 export interface EventForm {
   id: string;
   title: string;
+  createdAt: string
   description: string;
   image: string;
   location: string;

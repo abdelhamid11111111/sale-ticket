@@ -10,9 +10,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 export default function SoldTicketsLog() {
   const [tickets, setTicket] = useState<Tickets[]>([]);
   const [loading, setLoading] = useState(true);
-  const [paginationInfo, setPaginationInfo] = useState<PaginationInfo | null>(
-    null,
-  );
+  const [paginationInfo, setPaginationInfo] = useState<PaginationInfo | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
@@ -20,17 +18,10 @@ export default function SoldTicketsLog() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const fetchTickets = async (
-    page: number = 1,
-    search: string,
-    from: string,
-    to: string,
-  ) => {
+  const fetchTickets = async (page: number = 1, search: string, from: string, to: string) => {
     setLoading(true);
     try {
-      const res = await fetch(
-        `/api/admin/orders?page=${page}&search=${search}&from=${from}&to=${to}`,
-      );
+      const res = await fetch(`/api/admin/orders?page=${page}&search=${search}&from=${from}&to=${to}`);
       const data: apiResTicket = await res.json();
       setTicket(data.data);
       setPaginationInfo(data.Pagination);
@@ -61,7 +52,6 @@ export default function SoldTicketsLog() {
   const goToPage = (page: number) => {
     if (page >= 1 && paginationInfo && paginationInfo.totalPage >= page) {
       const params = new URLSearchParams(searchParams.toString());
-
       params.set("page", page.toString());
       router.push(`/admin/orders?${params.toString()}`);
     }
@@ -83,14 +73,7 @@ export default function SoldTicketsLog() {
       } else if (currentPage > totalPage - 2) {
         arrayPages.push("...", totalPage - 2, totalPage - 1, totalPage);
       } else {
-        arrayPages.push(
-          "...",
-          currentPage - 1,
-          currentPage,
-          currentPage + 1,
-          "...",
-          totalPage,
-        );
+        arrayPages.push("...", currentPage - 1, currentPage, currentPage + 1, "...", totalPage);
       }
     }
 
@@ -106,9 +89,7 @@ export default function SoldTicketsLog() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
-              <h1 className="text-2xl font-bold text-slate-900">
-                Sold Tickets Log
-              </h1>
+              <h1 className="text-2xl font-bold text-slate-900">Sold Tickets Log</h1>
               <p className="text-sm text-slate-500 mt-1">
                 Review and manage all ticket transactions across events.
               </p>
@@ -128,11 +109,8 @@ export default function SoldTicketsLog() {
                   value={search}
                   onChange={(e) => {
                     const value = e.target.value;
-                    // update state
                     setSearch(value);
-                    // keep url when typing for search
                     const params = new URLSearchParams(searchParams.toString());
-
                     if (value) {
                       params.set("search", value);
                     } else {
@@ -153,18 +131,11 @@ export default function SoldTicketsLog() {
                     value={from}
                     onChange={(e) => {
                       const value = e.target.value;
-                      // update state
                       setFrom(value);
-                      // keep url when user give from date
-                      const params = new URLSearchParams(
-                        searchParams.toString(),
-                      );
-
+                      const params = new URLSearchParams(searchParams.toString());
                       if (value) {
-                        // put value in url
                         params.set("from", value);
                       } else {
-                        // remove value from url
                         params.delete("from");
                       }
                       params.set("page", "1");
@@ -180,18 +151,11 @@ export default function SoldTicketsLog() {
                     value={to}
                     onChange={(e) => {
                       const value = e.target.value;
-                      // update state
                       setTo(value);
-                      // keep url when user give to value
-                      const params = new URLSearchParams(
-                        searchParams.toString(),
-                      );
-
+                      const params = new URLSearchParams(searchParams.toString());
                       if (value) {
-                        // put value in url
                         params.set("to", value);
                       } else {
-                        // remove value from url
                         params.delete("to");
                       }
                       params.set("page", "1");
@@ -206,25 +170,25 @@ export default function SoldTicketsLog() {
           {/* Table */}
           <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col h-162.5">
             <div className="flex-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-              <table className="min-w-full">
+              <table className="w-full table-fixed">
                 <thead>
                   <tr className="border-b border-slate-100">
-                    <th className="sticky top-0 px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider bg-white">
+                    <th className="sticky top-0 px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider bg-white w-[28%]">
                       Event
                     </th>
-                    <th className="sticky top-0 px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider bg-white">
+                    <th className="sticky top-0 px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider bg-white w-[15%]">
                       Buyer
                     </th>
-                    <th className="sticky top-0 px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider bg-white">
+                    <th className="sticky top-0 px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider bg-white w-[22%]">
                       Contact
                     </th>
-                    <th className="sticky top-0 px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider bg-white">
+                    <th className="sticky top-0 px-6 py-4 text-left text-xs font-semibold text-slate-400 uppercase tracking-wider bg-white w-[12%]">
                       City
                     </th>
-                    <th className="sticky top-0 px-6 py-4 text-center text-xs font-semibold text-slate-400 uppercase tracking-wider bg-white">
+                    <th className="sticky top-0 px-6 py-4 text-center text-xs font-semibold text-slate-400 uppercase tracking-wider bg-white w-[8%]">
                       Qty
                     </th>
-                    <th className="sticky top-0 px-6 py-4 text-right text-xs font-semibold text-slate-400 uppercase tracking-wider bg-white">
+                    <th className="sticky top-0 px-6 py-4 text-right text-xs font-semibold text-slate-400 uppercase tracking-wider bg-white w-[15%]">
                       Total
                     </th>
                   </tr>
@@ -233,45 +197,35 @@ export default function SoldTicketsLog() {
                   {/* Loading */}
                   {loading &&
                     Array.from({ length: 6 }).map((_, i) => (
-                      <tr
-                        key={i}
-                        className="border-b border-slate-50 animate-pulse"
-                      >
-                        {/* Event - matches w-14 h-14 image + two lines */}
+                      <tr key={i} className="border-b border-slate-50 animate-pulse">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
                             <div className="h-14 w-14 rounded-lg bg-slate-100 shrink-0" />
-                            <div className="space-y-2">
+                            <div className="space-y-2 min-w-0 flex-1">
                               <div className="h-3 w-28 bg-slate-100 rounded-full" />
                               <div className="h-2 w-16 bg-slate-100 rounded-full" />
                             </div>
                           </div>
                         </td>
-                        {/* Buyer */}
                         <td className="px-6 py-4">
                           <div className="h-3 w-24 bg-slate-100 rounded-full" />
                         </td>
-                        {/* Contact */}
                         <td className="px-6 py-4 space-y-2">
                           <div className="h-3 w-36 bg-slate-100 rounded-full" />
                           <div className="h-2 w-24 bg-slate-100 rounded-full" />
                         </td>
-                        {/* City */}
                         <td className="px-6 py-4">
                           <div className="h-3 w-16 bg-slate-100 rounded-full" />
                         </td>
-                        {/* Qty - matches the badge */}
                         <td className="px-6 py-4 text-center">
                           <div className="h-7 w-7 rounded-lg bg-slate-100 mx-auto" />
                         </td>
-                        {/* Total */}
                         <td className="px-6 py-4 text-right">
                           <div className="h-3 w-14 bg-slate-100 rounded-full ml-auto" />
                         </td>
                       </tr>
                     ))}
 
-                  {/* Empty */}
                   {/* Empty */}
                   {!loading && tickets.length === 0 && (
                     <tr>
@@ -285,9 +239,7 @@ export default function SoldTicketsLog() {
                             )}
                           </div>
                           <p className="text-sm font-semibold text-slate-700">
-                            {search || from || to
-                              ? "No results found"
-                              : "No tickets yet"}
+                            {search || from || to ? "No results found" : "No tickets yet"}
                           </p>
                           <p className="text-xs text-slate-400">
                             {search && !from && !to
@@ -308,7 +260,7 @@ export default function SoldTicketsLog() {
                               }}
                               className="mt-1 text-xs text-slate-500 border border-slate-200 px-3 py-1.5 rounded-lg hover:bg-slate-50 transition-colors"
                             >
-                              Clear 
+                              Clear
                             </button>
                           )}
                         </div>
@@ -321,23 +273,22 @@ export default function SoldTicketsLog() {
                     tickets.map((row) => (
                       <tr
                         key={row.id}
-                        className="border-b border-slate-50 mr-14 hover:bg-slate-50/60 transition-colors"
+                        className="border-b border-slate-50 hover:bg-slate-50/60 transition-colors"
                       >
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center gap-3">
+                        {/* Event */}
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3 min-w-0">
                             <img
                               src={row.event.image}
                               alt={row.event.title}
-                              className="w-14 h-14 rounded-lg object-cover"
+                              className="w-14 h-14 rounded-lg object-cover shrink-0"
                             />
-                            <div>
-                              <div className="text-sm font-semibold text-slate-800">
+                            <div className="min-w-0">
+                              <div className="font-medium text-sm text-slate-800 truncate">
                                 {row.event.title}
                               </div>
                               <div className="text-xs text-slate-400 mt-0.5">
-                                {new Date(
-                                  row.event.eventDate,
-                                ).toLocaleDateString("en-US", {
+                                {new Date(row.event.createdAt).toLocaleDateString("en-US", {
                                   month: "short",
                                   day: "numeric",
                                   year: "numeric",
@@ -346,30 +297,40 @@ export default function SoldTicketsLog() {
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-slate-800">
+
+                        {/* Buyer */}
+                        <td className="px-6 py-4">
+                          <div className="text-sm font-medium text-slate-800 truncate">
                             {row.buyer.name}
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-slate-700">
+
+                        {/* Contact */}
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-slate-700 truncate">
                             {row.buyer.email}
                           </div>
-                          <div className="text-xs text-slate-400 mt-0.5">
+                          <div className="text-xs text-slate-400 mt-0.5 truncate">
                             {row.buyer.phone}
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="text-sm text-slate-600">
+
+                        {/* City */}
+                        <td className="px-6 py-4">
+                          <span className="text-sm text-slate-600 truncate block">
                             {row.city.name}
                           </span>
                         </td>
-                        <td className="px-6 py-4  whitespace-nowrap text-center">
+
+                        {/* Qty */}
+                        <td className="px-6 py-4 text-center whitespace-nowrap">
                           <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-slate-100 text-xs font-semibold text-slate-700">
                             {row.quantity}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap mr-14 text-right">
+
+                        {/* Total */}
+                        <td className="px-6 py-4 text-right whitespace-nowrap">
                           <span className="text-sm font-bold text-slate-900">
                             ${row.totalPrice}
                           </span>
@@ -416,8 +377,8 @@ export default function SoldTicketsLog() {
                         <button
                           onClick={() => goToPage(numPage as number)}
                           className={`w-9 h-9 rounded-lg border border-slate-200
-                       ${currentPage === numPage ? "bg-slate-900 text-white" : "text-slate-500 hover:bg-slate-200 "}
-                        text-slate-500 text-sm transition-colors`}
+                       ${currentPage === numPage ? "bg-slate-900 text-white" : "text-slate-500 hover:bg-slate-200"}
+                        text-sm transition-colors`}
                         >
                           {numPage === "..." ? (
                             <span className="w-9 h-9 inline-flex items-center justify-center text-slate-400 text-sm">
