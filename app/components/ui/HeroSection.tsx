@@ -92,8 +92,8 @@ const HeroSection = () => {
                         <FaLocationDot />
                         <span>
                           <span style={{ display: "flex", gap: "4px" }}>
-                            <span>{e.location},</span>
-                            <span>{e.city.name}</span>
+                            <span>{e.city.name},</span>
+                            <span>{e.location}</span>
                           </span>
                         </span>
                       </div>
