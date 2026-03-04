@@ -223,9 +223,9 @@ const Events = () => {
                       </span>
                     </div>
                   </div>
-                  <h3 className="text-sm font-bold text-slate-900 line-clamp-2 leading-tight">
+                  <div className="font-medium truncate max-w-xs">
                     {event.title}
-                  </h3>
+                  </div>
                   <div className="flex items-center gap-1.5 text-xs text-slate-500">
                     <FaLocationDot className="flex-shrink-0" />
                     <span className="truncate">
