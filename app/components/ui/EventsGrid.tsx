@@ -248,10 +248,9 @@ const EventsGrid = () => {
 
                   <div className="flex items-center gap-2 text-sm text-slate-500">
                     <FaLocationDot />
-                    <span style={{ display: "flex", gap: "4px" }}>
-                      <span>{event.location},</span>
-                      <span>{event.city.name}</span>
-                    </span>
+                      <span>{event.city.name},</span>
+                      {"    "}
+                      <span>{event.location}</span>
                   </div>
 
                   <div className="border-t border-slate-200 pt-3 flex items-center justify-between">
