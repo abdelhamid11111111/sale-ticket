@@ -125,7 +125,7 @@ const EventsGrid = () => {
         {/* Right side */}
         <Link
           href="/events"
-          className="text-sm font-semibold text-primary text-blue-500 hover:text-blue-300 transition-colors flex items-center gap-1"
+          className="text-sm font-semibold text-blue-500 hover:text-blue-300 transition-colors flex items-center gap-1"
         >
           View all events
           <FaArrowRight />
