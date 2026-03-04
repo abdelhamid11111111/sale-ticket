@@ -223,11 +223,11 @@ const Events = () => {
                       </span>
                     </div>
                   </div>
-                  <div className="font-medium truncate max-w-xs">
+                   <h3 className="text-base font-bold text-slate-900 truncate">
                     {event.title}
-                  </div>
+                  </h3>
                   <div className="flex items-center gap-1.5 text-xs text-slate-500">
-                    <FaLocationDot className="flex-shrink-0" />
+                    <FaLocationDot className="shrink-0" />
                     <span className="truncate">
                       {event.location}, {event.city.name}
                     </span>
