@@ -7,11 +7,14 @@ on:
     branches: ["**"]
 
 jobs:
-  # ─── Job 1: Jest (Unit + Integration) ────────────────────────────────────
   jest:
     name: Jest Tests
     runs-on: ubuntu-latest
 
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DIRECT_URL: ${{ secrets.DIRECT_URL }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -23,38 +26,32 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
+
+      - name: Install ts-node
+        run: npm install ts-node --no-save
 
       - name: Generate Prisma client
         run: npx prisma generate
-        env:
-          # Prisma only needs a valid URL format to generate, not a real DB
-          DATABASE_URL: "postgresql://fake:fake@localhost:5432/fake"
 
       - name: Run unit tests
-        run: npm run test:unit -- --ci
+        run: npx jest --testPathPatterns=unit --ci --coverage --coverageReporters=text --coverageReporters=lcov
 
       - name: Run integration tests
-        run: npm run test:integration -- --ci
+        run: npx jest --testPathPatterns=integration --ci
 
-      - name: Upload coverage
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: jest-coverage
-          path: coverage/
-          retention-days: 7
-
-  # ─── Job 2: Playwright (E2E) ──────────────────────────────────────────────
   playwright:
     name: Playwright E2E
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    # Only run E2E after Jest passes — saves billing minutes on broken code
     needs: jest
 
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DIRECT_URL: ${{ secrets.DIRECT_URL }}
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
 
     steps:
       - name: Checkout code
@@ -67,7 +64,7 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
