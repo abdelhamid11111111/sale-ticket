@@ -5,7 +5,9 @@ import { test, expect } from "@playwright/test";
 test.describe("Homepage", () => {
   test("loads and shows the navbar", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByText("TicketFlow")).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "TicketFlow" }).first(),
+    ).toBeVisible();
   });
 
   test("search bar is present", async ({ page }) => {
@@ -39,7 +41,7 @@ test.describe("Admin categories page", () => {
   test("Add Category button is present", async ({ page }) => {
     await page.goto("/admin/categories");
     await expect(
-      page.getByRole("button", { name: /Add Category/i })
+      page.getByRole("button", { name: /Add Category/i }),
     ).toBeVisible();
   });
 });
@@ -55,7 +57,7 @@ test.describe("Admin events page", () => {
   test("Create New Event button is present", async ({ page }) => {
     await page.goto("/admin/events");
     await expect(
-      page.getByRole("button", { name: /Create New Event/i })
+      page.getByRole("button", { name: /Create New Event/i }),
     ).toBeVisible();
   });
 });
