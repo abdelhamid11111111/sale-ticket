@@ -1,20 +1,25 @@
+# 1. NAME OF THE WORKFLOW
 name: Jest Tests
 
+# 2. WHEN TO RUN (triggers)
 on:
   push:
     branches: ["**"]
   pull_request:
     branches: ["**"]
 
+# 3. JOBS (what to do)
 jobs:
-  jest:
-    name: Run Jest Tests
-    runs-on: ubuntu-latest
+  jest:                        # job name (you choose)
+    name: Run Jest Tests       # display name in GitHub
+    runs-on: ubuntu-latest     # what machine to run on
 
+# 4. ENV VARS (available to all steps)
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       DIRECT_URL: ${{ secrets.DIRECT_URL }}
 
+# 5. STEPS (commands to run in order)
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
