@@ -3,7 +3,7 @@ import { Ticket, Facebook, Twitter, Instagram, Mail, ArrowRight, MapPin } from '
 
 const Footer = () => {
   const [email, setEmail] = useState('');
-  const [submitted, setSubmitted] = useState(false);
+  const [submitted, setSubmitted] = useState(false) ;
 
   const handleSubmit = (e) => {
     e.preventDefault();
