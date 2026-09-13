@@ -29,7 +29,7 @@ const Footer = () => {
             shows, and everything worth showing up for.
           </p>
 
-          <form onSubmit={handleSubmit} className="mt-6 max-w-sm">
+          {/* <form onSubmit={handleSubmit} className="mt-6 max-w-sm">
             <label htmlFor="footer-email" className="block text-xs font-medium text-[#8b91b8] mb-2">
               Get notified when new events drop near you
             </label>
@@ -56,7 +56,7 @@ const Footer = () => {
                 </button>
               </div>
             )}
-          </form>
+          </form> */}
         </div>
 
         {/* Link columns */}
