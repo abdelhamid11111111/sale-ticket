@@ -1,11 +1,13 @@
+"use client";
+
 import React, { useState } from 'react';
 import { Ticket, Facebook, Twitter, Instagram, Mail, ArrowRight, MapPin } from 'lucide-react';
 
 const Footer = () => {
   const [email, setEmail] = useState('');
-  const [submitted, setSubmitted] = useState(false) ;
+  const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!email.trim() || !email.includes('@')) return;
     setSubmitted(true);
@@ -33,7 +35,7 @@ const Footer = () => {
             </label>
             {submitted ? (
               <p className="text-sm text-[#ffb648] flex items-center gap-2">
-                <Mail className="w-4 h-4" /> You're on the list.
+                <Mail className="w-4 h-4" /> You&apos;re on the list.
               </p>
             ) : (
               <div className="flex gap-2">
